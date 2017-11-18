@@ -12,7 +12,7 @@
         Dim charYearBorn As Integer
         Dim homeland As String = "Salisbury"
         Dim culture As String = "Cymric"
-        Dim charReligion As String
+        Dim charReligion As String = ""
         Dim charSonNumber As Integer = 1
         Dim charLeige As String = "Sir Roderick, Earl of Salisbury"
         Dim charClass As String = "squire"  'Might be different for women?
@@ -38,6 +38,12 @@
         Dim charSquire As String() = {RandomName(), "15", "First Aid", "6", "Battle", "1", "Horsemanship", "6", "xx", "5"}
         Dim charHeirloom As String
         Dim charFamilyCharacteristic As String
+        'Name, alive/dead, notes.
+        Dim charOldKnights As String(,) = New String(0, 2) {}
+        Dim charMAKnights As String(,) = New String(4, 2) {}
+        Dim charYoungKnights As String(,) = New String(6, 2) {}
+        Dim charLineageMen As Integer = DiceRoller(2, 6) + 5
+        Dim charLevies As Integer = DiceRoller(5, 20)
 
         Dim fatherName As String = RandomName()
         Dim grandfatherName As String = RandomName()
@@ -59,6 +65,7 @@
         Dim attMin As Integer
         Dim attMax As Integer
         Dim s As String
+        Dim s2 As String
 
         Console.WriteLine("Welcome to the Pendragon character generator!")
         Console.WriteLine("This program will basically hammer through all the random tables in the")
@@ -202,9 +209,7 @@
             charSkills = InitialiseCharSkills()
         End If
 
-#Disable Warning BC42104 ' Variable is used before it has been assigned a value
         Select Case LCase(Left(charReligion, 1))
-#Enable Warning BC42104 ' Variable is used before it has been assigned a value
             Case "b"
                 charSkills(0, 20) = Replace(charSkills(0, 20), "xx", "British Christianity")
             Case "r"
@@ -285,49 +290,7 @@
         charHP = charCON + charSIZ
         charUnconscious = Math.Round(charHP / 4)
 
-        x = 0
-        If charAPP <= 6 Then
-            x = 3
-        ElseIf charAPP <= 9 Then
-            x = 2
-        ElseIf charAPP <= 12 Then
-            x = 1
-        ElseIf charAPP <= 16 Then
-            x = 2
-        Else
-            x = 3
-        End If
-
-        If x = 1 Then
-            Console.WriteLine("Thanks to " & xhis & " APP of " & charAPP & ", " & charName & " has " & x & " distinctive feature:")
-        Else
-            Console.WriteLine("Thanks to " & xhis & " APP of " & charAPP & ", " & charName & " has " & x & " distinctive features:")
-        End If
-        charFeatures = "Something about their "
-
-        Dim fArray As New ArrayList()
-        fArray.Add("hair")
-        fArray.Add("body")
-        fArray.Add("facial expression")
-        fArray.Add("speech")
-        fArray.Add("facial feature")
-        fArray.Add("limbs")
-
-        For i = 1 To x
-            x2 = DiceRoller(1, fArray.Count)
-            charFeatures = charFeatures & (fArray(x2))
-            fArray.RemoveAt(x2)
-            If i = x Then
-                charFeatures = charFeatures & "."
-            ElseIf i = (x - 1) Then
-                charFeatures = charFeatures & " and their "
-            Else
-                charFeatures = charFeatures & ", their "
-            End If
-        Next i
-        Console.WriteLine(charFeatures)
         Console.WriteLine()
-
         Console.WriteLine("Choose a knightly skill to be awesome at:")
         Console.WriteLine("(Awareness, Courtesy, First Aid, Hunting; Battle, Dagger, Horsemanship, Lance, Spear, Sword)")
 
@@ -463,6 +426,7 @@
 
         'And now back to your regularly-scheduled heirloom announcement.
         Console.Write(s & ".")
+        Console.WriteLine()
 
         Console.WriteLine()
         Console.WriteLine("Finally, you get a heritable family characteristic!")
@@ -473,8 +437,266 @@
             Console.Write("women")
         End If
         Console.Write(" of your line are all ")
+        s = SpecialGiftGenerator(charGender)
+        charFamilyCharacteristic = s
+        Console.Write(s & ".")
+
+        'And now a short bit to add the bonus you just got.
+        'First check to see if you got one bonus or two.
+        x = 0
+        For i = 1 To Len(s) - 1
+            s2 = Mid(s, i, 1)
+            If s2 = "+" Then x += 1
+        Next
+
+        If x = 1 Then
+            'If you got one, was it APP?
+            If InStr(s, "APP") > 0 Then
+                x = charAPP
+                charAPP = charAPP + 10
+                If charAPP > 18 Then charAPP = 18
+            Else
+                charSkills = SkillUpdater(s, charSkills)
+            End If
+        Else
+            'Lucky you, you get two!
+            x = InStr(s, "(")
+            s = Mid(s, x)
+            x = InStr(s, "and")
+            s2 = "(" & Trim(Mid(s, x + 4))
+            s = Left(s, x - 1) & ")"
+            charSkills = SkillUpdater(s, charSkills)
+            charSkills = SkillUpdater(s2, charSkills)
+        End If
+
+        x = 0
+        If charAPP <= 6 Then
+            x = 3
+        ElseIf charAPP <= 9 Then
+            x = 2
+        ElseIf charAPP <= 12 Then
+            x = 1
+        ElseIf charAPP <= 16 Then
+            x = 2
+        Else
+            x = 3
+        End If
+
+        'Distinctive features!
+        'Right at the end because a woman's APP might go up at the family features stage.
+        Console.WriteLine()
+        If x = 1 Then
+            Console.WriteLine("Thanks to " & xhis & " APP of " & charAPP & ", " & charName & " has " & x & " distinctive feature:")
+        Else
+            Console.WriteLine("Thanks to " & xhis & " APP of " & charAPP & ", " & charName & " has " & x & " distinctive features:")
+        End If
+        charFeatures = "Something about their "
+
+        Dim fArray As New ArrayList()
+        fArray.Add("hair")
+        fArray.Add("body")
+        fArray.Add("facial expression")
+        fArray.Add("speech")
+        fArray.Add("facial feature")
+        fArray.Add("limbs")
+
+        For i = 1 To x
+            x2 = DiceRoller(1, fArray.Count)
+            charFeatures = charFeatures & (fArray(x2))
+            fArray.RemoveAt(x2)
+            If i = x Then
+                charFeatures = charFeatures & "."
+            ElseIf i = (x - 1) Then
+                charFeatures = charFeatures & " and their "
+            Else
+                charFeatures = charFeatures & ", their "
+            End If
+        Next i
+        Console.WriteLine(charFeatures)
+        Console.WriteLine()
+
+        'Probably something about holdings here, which is just the same as home.
+
+        x2 = 0
+        s = " ("
+        x = DiceRoller(1, 6) - 5
+        If x = 1 Then
+            charOldKnights(0, 0) = RandomName()
+            charOldKnights(0, 1) = "alive"
+            charOldKnights(0, 2) = ""
+            s = s & "1 old, "
+            x2 = x2 + x
+        End If
+
+
+        x = DiceRoller(1, 6) - 2
+        If x > 0 Then
+            For i = 1 To x
+                charMAKnights(0, 0) = RandomName()
+                charMAKnights(0, 1) = "alive"
+                charMAKnights(0, 2) = ""
+            Next
+            s = s & x & " middle-aged, "
+            x2 = x2 + x
+        End If
+
+        x = DiceRoller(1, 6)
+        For i = 1 To x
+            charYoungKnights(0, 0) = RandomName()
+            charMAKnights(0, 1) = "alive"
+            charMAKnights(0, 2) = ""
+        Next
+        If x2 > 0 Then
+            s = s & "and " & x & " young)"
+        Else
+            s = s & "all young)"
+        End If
+
+        x2 = x2 + x
+        Console.WriteLine("Your personal army consists of:")
+        If x2 > 1 Then
+            Console.WriteLine(x2 & " family knights" & s & ", plus yourself.")
+        Else
+            Console.WriteLine("one young family knight, plus yourself")
+        End If
+        Console.WriteLine(charLineageMen & " lineage men.")
+        Console.WriteLine(charLevies & " levies.")
+
+        Console.WriteLine()
+        Console.WriteLine(charName & "'s family history will now be generated and appended to their character sheet.")
+
+        s = Nothing
+        Do
+            s = Console.ReadLine()
+        Loop While s Is Nothing
 
     End Sub
+
+    Function SkillUpdater(inString As String, sArray As String(,), Optional limited As Integer = -1) As String(,)
+        Dim s As String
+        Dim s2 As String
+        Dim x As Integer
+        Dim x2 As Integer
+
+        x = InStr(inString, "(")
+        s = Mid(inString, x + 1)
+        s = Left(s, Len(s) - 1)  's is now the bonus and skill
+
+        x2 = InStr(s, " ")
+        s2 = Trim(Left(s, x2))
+        s2 = Mid(s2, 2)
+        x = CInt(s2) 'x is now the bonus
+        s = Trim(Mid(s, x2))    's is now the skill
+
+        For i = 0 To 31
+            If sArray(0, i) = s Then
+                x2 = CInt(sArray(1, i))
+                x2 = x2 + x
+                If limited >= 0 Then
+                    If x2 > limited Then x = limited
+                End If
+                sArray(1, i) = CStr(x2)
+                Exit For
+            End If
+        Next
+        SkillUpdater = sArray
+    End Function
+
+    Function SpecialGiftGenerator(gender As String) As String
+        Dim s As String = ""
+        Dim x As Integer
+
+        x = DiceRoller(1, 20)
+        If gender = "male" Then
+            Select Case x
+                Case 1
+                    s = "good with horses (+5 Horsemanship)"
+                Case 2
+                    s = "good with horses (+5 Horsemanship)"
+                Case 3
+                    s = "excellent singers (+10 Singing)"
+                Case 4
+                    s = "possessed of keen senses (+5 Awareness)"
+                Case 5
+                    s = "possessed of keen senses (+5 Awareness)"
+                Case 6
+                    s = "possessed of keen senses (+5 Awareness)"
+                Case 7
+                    s = "possessed of keen senses (+5 Awareness)"
+                Case 8
+                    s = "gifted at naturecraft (+5 Hunting)"
+                Case 9
+                    s = "light-footed (+10 Dancing)"
+                Case 10
+                    s = "natural healers (+5 First Aid)"
+                Case 11
+                    s = "naturally lovable (+10 Flirting)"
+                Case 12
+                    s = "good with faces (+10 Recognise)"
+                Case 13
+                    s = "remarkably deductive (+5 Intrigue)"
+                Case 14
+                    s = "like otters (+10 Swimming)"
+                Case 15
+                    s = "natural speakers (+10 Orate)"
+                Case 16
+                    s = "natural musicians (+15 Play (Harp))"
+                Case 17
+                    s = "good with words (+15 Compose)"
+                Case 18
+                    s = "handy with heraldry (+10 Heraldry)"
+                Case 19
+                    s = "good with birds (+15 Falconry)"
+                Case 20
+                    s = "clever gamblers (+10 Gaming)"
+            End Select
+        Else
+            Select Case x
+                Case 1
+                    s = "beautiful (+10 APP)"
+                Case 2
+                    s = "beautiful (+10 APP)"
+                Case 3
+                    s = "beautiful (+10 APP)"
+                Case 4
+                    s = "beautiful (+10 APP)"
+                Case 5
+                    s = "beautiful (+10 APP)"
+                Case 6
+                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
+                Case 7
+                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
+                Case 8
+                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
+                Case 9
+                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
+                Case 10
+                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
+                Case 11
+                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
+                Case 12
+                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
+                Case 13
+                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
+                Case 14
+                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
+                Case 15
+                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
+                Case 16
+                    s = "excellent speakers (+5 Orate and +5 Singing)"
+                Case 17
+                    s = "excellent speakers (+5 Orate and +5 Singing)"
+                Case 18
+                    s = "nimble-fingered (+10 Industry)"
+                Case 19
+                    s = "diligent caretakers (+10 Stewardship)"
+                Case 20
+                    s = "diligent caretakers (+10 Stewardship)"
+            End Select
+        End If
+
+        SpecialGiftGenerator = s 
+    End Function
 
     Function HeirloomGenerator(Optional pagan As Boolean = False, Optional recurse As Boolean = False) As String
         Dim s As String = ""
@@ -776,7 +998,7 @@
         RandomName = Trim(nArray(n))
     End Function
 
-    Function DiceRoller(Optional quantity As Integer = 1, Optional sides As Integer = 20) As Integer
+    Public Function DiceRoller(Optional quantity As Integer = 1, Optional sides As Integer = 20) As Integer
         DiceRoller = 0
 
         Static Generator As System.Random = New System.Random()
