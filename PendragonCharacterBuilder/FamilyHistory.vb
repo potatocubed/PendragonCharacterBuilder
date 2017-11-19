@@ -1,6 +1,7 @@
 ﻿Module FamilyHistory
     Dim charName As String
     Dim fatherName As String
+    Dim motherName As String
     Dim grandfatherName As String
     Dim oldKnights As String(,)
     Dim maKnights As String(,)
@@ -10,24 +11,29 @@
     Dim grandfatherGlory As Integer = ((DiceRoller(1, 20) * 100) + 1000) / 10 + DiceRoller(2, 20)
     Dim fatherAlive As Boolean = True
     Dim grandfatherAlive As Boolean = True
-    Dim passionArray As New arraylist
+    Dim passionArray As New ArrayList
+    Dim extraHeirlooms As Integer = 0
+    Dim charBirthYear As Integer = 0
 
     Public Sub Main()
         fatherName = "Bob"
         grandfatherName = "Grand-Bob"
 
-        FamilyHistoryMaker("Steve", fatherName, grandfatherName, oldKnights, maKnights, youngKnights)
+        FamilyHistoryMaker("Steve", fatherName, grandfatherName, oldKnights, maKnights, youngKnights, 464)
     End Sub
 
     Public Function FamilyHistoryMaker(charName_x As String, fatherName_x As String, grandfatherName_x As String,
-                                       oldKnights_x As String(,), maKnights_x As String(,), youngKnights_x As String(,)) As String
+                                       oldKnights_x As String(,), maKnights_x As String(,), youngKnights_x As String(,),
+                                       charBirthYear_x As Integer) As String
         'Returns a multi-paragraph string covering the family history, with starting Glory at the very start.
         charName = charName_x
         fatherName = fatherName_x
+        motherName = RandomName("female")
         grandfatherName = grandfatherName_x
         oldKnights = oldKnights_x
         maKnights = maKnights_x
         youngKnights = youngKnights_x
+        charBirthYear = charBirthYear_x
 
         Dim s As String = ""
         Dim x As Integer
@@ -47,7 +53,7 @@
             If Left(s, 3) = "DIS" Then
                 familyDissident = True
             End If
-            s = Mid(s, 3)
+            s = Mid(s, 4)
             fhm = fhm & s
         End If
         If grandfatherAlive Then
@@ -57,27 +63,289 @@
             ElseIf Left(s, 3) = "DIS" Then
                 familyDissident = True
             End If
-            s = Mid(s, 3)
+            s = Mid(s, 4)
             fhm = fhm & s
         End If
         If grandfatherAlive Then fhm = fhm & Year451(familyDissident)
-        If grandfatherAlive Then fhm = fhm & NothingYear("452-454")
-        If grandfatherAlive Then fhm = fhm & NothingYear("455-456")
+        If grandfatherAlive Then fhm = fhm & GrandfatherNothingYear("452-454")
+        If grandfatherAlive Then fhm = fhm & GrandfatherNothingYear("455-456")
+        If grandfatherAlive Then fhm = fhm & Year457(familyDissident)
+        If grandfatherAlive Then fhm = fhm & GrandfatherNothingYear("458-459")
+        fhm = fhm & Year460()
+        fhm = fhm & Year461()
+        fhm = fhm & Year463()
+        fhm = fhm & Year464()
 
         FamilyHistoryMaker = CStr(glory) & "xx" & fhm
+        'And also return extraHeirlooms
     End Function
 
-    Function NothingYear(yearNo As String) As String
+    Function GrandfatherNothingYear(yearNo As String) As String
         Dim s As String = ""
-        Dim x As Integer
+        Dim x As Integer = DiceRoller(1, 20)
 
-        x = DiceRoller(1, 20)
         If x = 1 Then
             s = yearNo & ": " & grandfatherName & " met his end. " & MiscDeath() & vbNewLine & vbNewLine
             grandfatherAlive = False
         End If
 
-        NothingYear = s
+        GrandfatherNothingYear = s
+    End Function
+
+    Function Year464() As String
+        If charBirthYear = 464 Then
+            Year464 = WeddingBirth("")
+            Year464 = Replace(Year464, " He also", $"464: {fatherName}")
+            Year464 = Year464 & vbNewLine & vbNewLine
+        Else
+            Year464 = ""
+        End If
+    End Function
+
+    Function Year463() As String
+        If grandfatherAlive Then
+            Year463 = $"463: At the 'Night of Long Knives', {grandfatherName} is murdered. {fatherName} survived, one way or another."
+            grandfatherAlive = False
+        End If
+        If charBirthYear = 463 Then
+            Year463 = WeddingBirth(Year463)
+        End If
+        passionArray.Add("PA/Hate (Saxons)/" & (6 + DiceRoller(3, 6)))
+
+        If passionArray.Count > 0 Then
+            ConsolidatePassions()
+
+            Console.WriteLine()
+            Console.Write("When he died, your grandfather had " & passionArray.Count & " passion")
+            If passionArray.Count > 1 Then Console.Write("s")
+            Console.Write(".")
+            Console.WriteLine()
+            Console.WriteLine("For each passion, please choose if your father also had it by typing y or n.")
+
+            Dim s As String
+            Dim p As String
+            Dim v As Integer
+            Dim x As Integer
+            Dim entry As String
+            Dim i As Integer
+            Dim stopValue As Integer
+
+            s = ""
+
+            stopValue = passionArray.Count - 1
+            i = 0
+            Do While i <= stopValue
+                entry = passionArray(i)
+                p = Mid(entry, 4)
+                x = InStrRev(p, "/")
+                v = CInt(Mid(p, x + 1))
+                p = Left(p, x - 1)
+                Do
+                    Console.WriteLine(p & ": " & CStr(v) & " -- y or n?")
+                    s = Console.ReadLine()
+                    s = LCase(s)
+                    s = Left(s, 1)
+                    If s <> "y" And s <> "n" Then
+                        s = ""
+                        Console.WriteLine("Keep this trait, y or n?")
+                    End If
+                Loop While s = ""
+                If s = "n" Then
+                    passionArray.Remove(entry)
+                    stopValue -= 1
+                    i -= 1
+                End If
+                i += 1
+            Loop
+        End If
+    End Function
+
+    Sub ConsolidatePassions()
+        Dim s As String
+        Dim s2 As String
+        Dim x As Integer
+        Dim x2 As Integer
+        Dim x3 As Integer
+        Dim passValue As Integer
+        Dim passValue2 As Integer
+        Dim stopValue As Integer
+        Dim i As Integer
+        Dim j As Integer
+
+        'passionArray.Add("PA/Hate (Saxons)/13")
+        'passionArray.Add("PA/Hate (Saxons)/14")
+        'passionArray.Add("PA/Hate (Saxons)/12")
+        stopValue = passionArray.Count - 1
+
+        i = 0
+        Do While i <= stopValue
+            s = passionArray(i)
+            x2 = passionArray.IndexOf(s)
+            s = Mid(s, 4)
+            x = InStrRev(s, "/")
+            passValue = Mid(s, x + 1)
+            s = Left(s, x - 1)
+            j = 0
+            Do While j <= stopValue
+                s2 = passionArray(j)
+                x3 = passionArray.IndexOf(s2)
+                If x2 <> x3 Then
+                    s2 = Mid(s2, 4)
+                    x = InStrRev(s2, "/")
+                    passValue2 = Mid(s2, x + 1)
+                    s2 = Left(s2, x - 1)
+                    If s = s2 Then
+                        If passValue >= passValue2 Then
+                            passionArray.RemoveAt(x3)
+                            stopValue -= 1
+                        Else
+                            passionArray.RemoveAt(x2)
+                            stopValue -= 1
+                            j = j - 1
+                            i = i - 1
+                        End If
+                    End If
+                End If
+                j = j + 1
+            Loop
+            i = i + 1
+        Loop
+    End Sub
+
+    Function Year461() As String
+        Dim s As String = ""
+        Dim x As Integer = DiceRoller(1, 20)
+
+        If grandfatherAlive = True Then
+            s = $"461-462: {fatherName} served garrison duty."
+            If charBirthYear = 461 Or charBirthYear = 462 Then
+                s = WeddingBirth(s)
+            End If
+            If x = 1 Then
+                s = $"{s} Meanwhile, {grandfatherName} met his end. " & MiscDeath()
+                s = s & vbNewLine & vbNewLine
+                grandfatherAlive = False
+            ElseIf x <= 5 Then
+                s = ""
+            Else
+                s = $"{s} Meanwhile, {grandfatherName} fought at the Battle of Cambridge"
+                grandfatherGlory += (DiceRoller(1, 6) * 30)
+                x = DiceRoller(1, 20)
+                If x = 1 Then
+                    s = $"{s}, where he died gloriously in battle."
+                    grandfatherAlive = False
+                    grandfatherGlory += 1000
+                ElseIf x <= 3 Then
+                    s = $"{s}, where he died."
+                    grandfatherAlive = False
+                Else
+                    s = $"{s}."
+                    grandfatherGlory += 10
+                End If
+                s = s & vbNewLine & vbNewLine
+            End If
+        Else
+            s = ""
+        End If
+
+        Year461 = s
+    End Function
+
+    Function WeddingBirth(s As String)
+        Dim x As Integer = DiceRoller(1, 20)
+        Dim x2 As Integer
+        s = $"{s} He also married {motherName} (a widow) and fathered {charName}."
+
+        If x <= 4 Then
+            x2 = 25
+        ElseIf x <= 7 Then
+            x2 = 50
+        ElseIf x <= 17 Then
+            x2 = 100
+        ElseIf x <= 19 Then
+            x2 = 200
+        Else
+            x2 = 350
+        End If
+
+        fatherGlory += x2   'This will vanish if this is called earlier than Year460.
+        WeddingBirth = s
+    End Function
+
+    Function Year460() As String
+        Dim s As String = ""
+        Dim x As Integer = DiceRoller(1, 20)
+
+        s = $"460: {fatherName}, son of {grandfatherName} began his service as a knight in this year."
+        fatherGlory = 1000 + Math.Round(grandfatherGlory / 10)
+
+        If charBirthYear = 460 Then
+            s = WeddingBirth(s)
+        End If
+
+        If x = 1 And grandfatherAlive = True Then
+            s = $"{s} Unfortunately {grandfatherName} met his end. " & MiscDeath()
+            grandfatherAlive = False
+        End If
+
+        s = s & vbNewLine & vbNewLine
+        Year460 = s
+    End Function
+
+    Function Year457(famDiss As Boolean) As String
+        Dim s As String = ""
+        Dim x As Integer = DiceRoller(1, 20)
+
+        If famDiss Then x = x + 10
+        s = $"457: {grandfatherName}"
+
+        If x = 1 Then
+            s = $"{s} met his end. " & MiscDeath()
+            grandfatherAlive = False
+        ElseIf x <= 8 Then
+            s = $"{s} managed to avoid every last shred of excitement this year."
+        Else
+            s = $"{s} fought at the Battle of Kent, on the side of the "
+            If famDiss Then
+                s = s & "rebels"
+                x = DiceRoller(1, 20)
+                grandfatherGlory += Math.Round((DiceRoller(1, 6) * 30 * 0.75))
+                If x = 1 Then
+                    s = $"{s}, where he died gloriously in battle."
+                    grandfatherGlory += 1000
+                    grandfatherAlive = False
+                ElseIf x <= 5 Then
+                    s = $"{s}, where he died in battle."
+                    grandfatherAlive = False
+                ElseIf x = 20 Then
+                    s = $"{s}, where he defeated one of Vortigern's bodyguards but couldn't quite reach the king."
+                    grandfatherGlory += 100
+                Else
+                    s = s & "."
+                End If
+            Else
+                s = s & "loyalists"
+                x = DiceRoller(1, 20)
+                grandfatherGlory += (DiceRoller(1, 6) * 45)
+                If x = 1 Then
+                    s = $"{s}, where he died gloriously in battle."
+                    grandfatherGlory += 1000
+                    grandfatherAlive = False
+                ElseIf x <= 3 Then
+                    s = $"{s}, where he died in battle."
+                    grandfatherAlive = False
+                ElseIf x = 20 Then
+                    s = $"{s}, where he defeated a rebel hero who was trying to fight through Vortigern's bodyguards. Later, the king publically praised him for valour and bestowed upon him many gifts."
+                    grandfatherGlory += 125
+                    extraHeirlooms += 2
+                Else
+                    s = s & "."
+                End If
+            End If
+        End If
+
+        s = s & vbNewLine & vbNewLine
+        Year457 = s
     End Function
 
     Function Year451(famDiss As Boolean) As String
@@ -117,11 +385,11 @@
         Dim x As Integer
 
         Console.WriteLine()
-        Console.WriteLine("Complaints about Vortigern's Saxon-loving ways become louder.")
+        Console.WriteLine("In 450, complaints about Vortigern's Saxon-loving ways became louder.")
         If famDiss Then
-            Console.WriteLine("Does your family raise their voices further and stand at the front of this dissenting faction? [y or n]")
+            Console.WriteLine("Did your family raise their voices further and stand at the front of this dissenting faction? [y or n]")
         Else
-            Console.WriteLine("Does your family join them? [y or n]")
+            Console.WriteLine("Did your family join them? [y or n]")
         End If
 
         Do
