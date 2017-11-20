@@ -79,6 +79,7 @@
                 hElem2 = hElem.SelectSingleNode($"./sub-roll/sub-outcome[@dice_min <= {x} and @dice_max >= {x}]")
                 hNode = hElem2.SelectSingleNode("./node()")
                 s = s & hNode.Value
+                s = Replace(s, "SUBROLL", CStr(x))
             Catch ex As Exception
                 s = s & ""
             End Try
