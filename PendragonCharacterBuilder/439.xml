@@ -1,0 +1,30 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<events year="439">
+	<text>In this year {grandfatherName} fathered a son, {fatherName}.</text>
+	<event dice_min="1" dice_max="1">
+		<text dies="true">Unfortunately he then met his end. MISCDEATH</text>
+	</event>
+	<event dice_min="2" dice_max="6">
+		<text>NOTHINGYEAR</text>
+	</event>
+	<event dice_min="7" dice_max="20">
+		<text battle="Carlion">Then {grandfatherName} fought at the battle of Carlion</text>
+	</event>
+</events>
+<battle name="Carlion" glory-die="1d6" glory-flat="15" glory-multiplier="1">
+	<b-event dice_min="1" dice_max="1">
+		<text glory="1000" passion="1" dies="true">, where he died gloriously.</text>
+	</b-event>
+	<b-event dice_min="2" dice_max="2">
+		<text passion="1" dies="true">, where he died.</text>
+	</b-event>
+	<b-event dice_min="3" dice_max="20">
+		<text passion="1">.</text>
+	</b-event>
+</battle>
+<passion id="1">
+	<p-event dice_min="1" dice_max="15"/>
+	<p-event dice_min="16" dice_max="20"/>
+		<text value="3d6">PA/Hate (Irish)/</text>
+	</p-event>
+</passion>
