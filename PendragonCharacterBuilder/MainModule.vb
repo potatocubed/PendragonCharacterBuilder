@@ -37,7 +37,6 @@
         Dim charGlory As Integer
         Dim charHorses As String() = {"Charger #1", "Rouncy #1", "Rouncy #2", "Sumpter #1", "", ""}
         Dim charSquire As String() = {RandomName(), "15", "First Aid", "6", "Battle", "1", "Horsemanship", "6", "xx", "5"}
-        Dim charHeirloom As String
         Dim charHeirlooms As New ArrayList   'Because you can have more than one!
         Dim charFamilyCharacteristic As String
         'Name, alive/dead, notes.
@@ -72,7 +71,7 @@
 
         Dim here As String = My.Computer.FileSystem.CurrentDirectory
         'DEBUG
-        here = "C:\Users\LonghurstC\Desktop\temp\pdcc"
+        'here = "C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
 
         Dim sList As String = here & "\pdcc_skill_list.xml"
         Dim hList As String = here & "\pdcc_heirlooms.xml"
@@ -741,7 +740,7 @@
             End Select
         End If
 
-        SpecialGiftGenerator = s 
+        SpecialGiftGenerator = s
     End Function
 
     Function InitialiseCharSkills(f As String, Optional gender As String = "male") As String(,)
