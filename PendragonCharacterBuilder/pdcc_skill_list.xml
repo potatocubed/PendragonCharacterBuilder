@@ -1,0 +1,122 @@
+<pdcc_skill_list>
+	<skill name="Awareness" knightly="true" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="5" female="2"/>
+	</skill>
+	<skill name="Boating" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="1" female="0"/>
+	</skill>
+	<skill name="Chirurgery" knightly="false" non-knightly="true" knowledge="false" combat="false">
+		<start_value male="0" female="10"/>
+	</skill>
+	<skill name="Compose" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="1" female="1"/>
+	</skill>
+	<skill name="Courtesy" knightly="true" non-knightly="false" knowledge="true" combat="false">
+		<start_value male="3" female="5"/>
+	</skill>
+	<skill name="Dancing" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="2" female="2"/>
+	</skill>
+	<skill name="Faerie Lore" knightly="false" non-knightly="false" knowledge="true" combat="false">
+		<start_value male="1" female="3"/>
+	</skill>
+	<skill name="Falconry" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="3" female="2"/>
+	</skill>
+	<skill name="Fashion" knightly="false" non-knightly="true" knowledge="false" combat="false">
+		<start_value male="0" female="2"/>
+	</skill>
+	<skill name="First Aid" knightly="true" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="10" female="10"/>
+	</skill>
+	<skill name="Flirting" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="3" female="5"/>
+	</skill>
+	<skill name="Folk Lore" knightly="false" non-knightly="false" knowledge="true" combat="false">
+		<start_value male="2" female="2"/>
+	</skill>
+	<skill name="Gaming" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="3" female="3"/>
+	</skill>
+	<skill name="Heraldry" knightly="false" non-knightly="false" knowledge="true" combat="false">
+		<start_value male="3" female="1"/>
+	</skill>
+	<skill name="Hunting" knightly="true" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="2" female="0"/>
+	</skill>
+	<skill name="Industry" knightly="false" non-knightly="true" knowledge="false" combat="false">
+		<start_value male="0" female="5"/>
+	</skill>
+	<skill name="Intrigue" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="3" female="2"/>
+	</skill>
+	<skill name="Orate" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="3" female="2"/>
+	</skill>
+	<skill name="Play (Harp)" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="3" female="3"/>
+	</skill>
+	<skill name="Read (Latin)" knightly="false" non-knightly="false" knowledge="true" combat="false">
+		<start_value male="0" female="1"/>
+	</skill>
+	<skill name="Recognise" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="3" female="2"/>
+	</skill>
+	<skill name="Religion (xx)" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="2" female="2"/>
+	</skill>
+	<skill name="Romance" knightly="false" non-knightly="false" knowledge="true" combat="false">
+		<start_value male="2" female="2"/>
+	</skill>
+	<skill name="Singing" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="2" female="3"/>
+	</skill>
+	<skill name="Stewardship" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="2" female="5"/>
+	</skill>
+	<skill name="Swimming" knightly="false" non-knightly="false" knowledge="false" combat="false">
+		<start_value male="2" female="1"/>
+	</skill>
+	<skill name="Tourney" knightly="false" non-knightly="false" knowledge="true" combat="false">
+		<start_value male="2" female="1"/>
+	</skill>
+	<skill name="Axe" knightly="false" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="0" female="0"/>
+	</skill>
+	<skill name="Battle" knightly="true" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="10" female="1"/>
+	</skill>
+	<skill name="Bow" knightly="false" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="0" female="0"/>
+	</skill>
+	<skill name="Crossbow" knightly="false" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="0" female="0"/>
+	</skill>
+	<skill name="Dagger" knightly="true" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="5" female="5"/>
+	</skill>
+	<skill name="Great Axe" knightly="false" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="0" female="0"/>
+	</skill>
+	<skill name="Great Spear" knightly="false" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="0" female="0"/>
+	</skill>
+	<skill name="Horsemanship" knightly="true" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="10" female="3"/>
+	</skill>
+	<skill name="Javelin" knightly="false" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="0" female="0"/>
+	</skill>
+	<skill name="Lance" knightly="true" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="10" female="0"/>
+	</skill>
+	<skill name="Mace" knightly="false" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="0" female="0"/>
+	</skill>
+	<skill name="Spear" knightly="true" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="6" female="0"/>
+	</skill>
+	<skill name="Sword" knightly="true" non-knightly="false" knowledge="false" combat="true">
+		<start_value male="10" female="0"/>
+	</skill>
+</pdcc_skill_list>
