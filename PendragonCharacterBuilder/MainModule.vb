@@ -8,6 +8,7 @@
 
         Dim charName As String
         Dim charGender As String
+        Dim tradWoman As Boolean = False
         Dim charAge As Integer
         Dim charYearBorn As Integer
         Dim homeland As String = "Salisbury"
@@ -37,6 +38,7 @@
         Dim charHorses As String() = {"Charger #1", "Rouncy #1", "Rouncy #2", "Sumpter #1", "", ""}
         Dim charSquire As String() = {RandomName(), "15", "First Aid", "6", "Battle", "1", "Horsemanship", "6", "xx", "5"}
         Dim charHeirloom As String
+        Dim charHeirlooms As New ArrayList   'Because you can have more than one!
         Dim charFamilyCharacteristic As String
         'Name, alive/dead, notes.
         Dim charOldKnights As String(,) = New String(0, 2) {}
@@ -57,6 +59,7 @@
         Dim xhim As String
         Dim xhis As String
         Dim xhe As String
+        Dim skArray As New ArrayList()
 
         Dim x As Integer
         Dim x2 As Integer
@@ -67,9 +70,16 @@
         Dim s As String
         Dim s2 As String
 
+        Dim here As String = My.Computer.FileSystem.CurrentDirectory
+        'DEBUG
+        here = "C:\Users\LonghurstC\Desktop\temp\pdcc"
+
+        Dim sList As String = here & "\pdcc_skill_list.xml"
+        Dim hList As String = here & "\pdcc_heirlooms.xml"
+
         Console.WriteLine("Welcome to the Pendragon character generator!")
         Console.WriteLine("This program will basically hammer through all the random tables in the")
-        Console.WriteLine("Pendragon core book For you, but it won't make any actual *decisions*.")
+        Console.WriteLine("Pendragon core book For you, but it won't make many actual *decisions*.")
         Console.WriteLine("So you'll have to dot the i's and cross the t's yourself.")
         Console.WriteLine()
         Console.WriteLine("To begin, is your character male [m] or female [f]?")
@@ -201,21 +211,25 @@
                 End If
             Loop While s = ""
             If s = "k" Then
-                charSkills = InitialiseCharSkills()
+                charSkills = InitialiseCharSkills(sList)
             Else
-                charSkills = InitialiseCharSkills("female")
+                charSkills = InitialiseCharSkills(sList, "female")
+                charClass = "lady"
+                charSquire(0) = RandomName("female")
+                charSquire(6) = ""
+                charSquire(9) = "6"
             End If
         Else
-            charSkills = InitialiseCharSkills()
+            charSkills = InitialiseCharSkills(sList)
         End If
 
         Select Case LCase(Left(charReligion, 1))
             Case "b"
-                charSkills(0, 20) = Replace(charSkills(0, 20), "xx", "British Christianity")
+                charSkills(0, 21) = Replace(charSkills(0, 21), "xx", "British Christianity")
             Case "r"
-                charSkills(0, 20) = Replace(charSkills(0, 20), "xx", "Roman Christianity")
+                charSkills(0, 21) = Replace(charSkills(0, 21), "xx", "Roman Christianity")
             Case "p"
-                charSkills(0, 20) = Replace(charSkills(0, 20), "xx", "Pagan")
+                charSkills(0, 21) = Replace(charSkills(0, 21), "xx", "Pagan")
         End Select
 
         Console.WriteLine()
@@ -292,14 +306,14 @@
 
         Console.WriteLine()
         Console.WriteLine("Choose a knightly skill to be awesome at:")
-        Console.WriteLine("(Awareness, Courtesy, First Aid, Hunting; Battle, Dagger, Horsemanship, Lance, Spear, Sword)")
-
-        Dim kSkills As String() = "Awareness,Courtesy,First Aid,Hunting,Battle,Dagger,Horsemanship,Lance,Spear,Sword".Split(",")
+        If tradWoman Then Console.WriteLine("(Yes, even as a traditional woman. The rules are a little odd here.)")
+        skArray = SkillLister(sList, "true")
+        PrintSkillList(skArray)
         s = Nothing
         Do
             s = Console.ReadLine()
             s = StrConv(s, VbStrConv.ProperCase)
-            If Not kSkills.Contains(s) Then
+            If Not skArray.Contains(s) Then
                 s = Nothing
             Else
                 For i = 0 To 31
@@ -309,39 +323,37 @@
             If s = Nothing Then Console.WriteLine("Please choose one of the knightly skills above.")
         Loop While s = Nothing
 
-        Dim skArray As New ArrayList()
-        For i = 0 To 25
+        skArray.Clear()
+        If tradWoman Then
+            'Women are allowed to be good at medicine, fashion, etc.
+            skArray = SkillLister(sList, "", "", False)
+        Else
+            skArray = SkillLister(sList, "", False, False)
+        End If
+        x = skArray.IndexOf("Religion (xx)")
+        skArray(x) = charSkills(0, 21)
+
+        For i = 0 To 39
+            'Skills which are at 10+ don't get improved at this step.
             s = charSkills(0, i)
-            If s = "Chirurgery" Or s = "Fashion" Or s = "Industry" Then
-                'Skip it
-            ElseIf CInt(charSkills(1, i)) < 10 Then
-                skArray.Add(charSkills(0, i))
-            End If
+            x = charSkills(1, i)
+            If x >= 10 Then skArray.Remove(s)
         Next
 
         Console.WriteLine()
         Console.WriteLine("And now choose three non-combat skills to be good at:")
         For j = 1 To 3
-            Console.WriteLine("Skill " & j & ":")
-            For i = 0 To skArray.Count - 1
-                Console.Write(skArray(i))
-                If i = skArray.Count - 1 Then
-                    Console.Write(".")
-                Else
-                    Console.Write(", ")
-                End If
-            Next
-            Console.WriteLine()
+            PrintSkillList(skArray)
             s = Nothing
             Do
                 s = Console.ReadLine
                 s = StrConv(s, VbStrConv.ProperCase)
                 If s = "Read" Then
-                    s = charSkills(0, 18)
+                    s = charSkills(0, 19)
                 ElseIf s = "Play" Then
-                    s = charSkills(0, 17)
+                    s = charSkills(0, 18)
                 ElseIf s = "Religion" Then
-                    s = charSkills(0, 20)
+                    s = charSkills(0, 21)
                 End If
                 If Not skArray.Contains(s) Then
                     s = Nothing
@@ -363,35 +375,34 @@
         Console.WriteLine("but those are way too fiddly for me to bother with here")
         Console.WriteLine("They'll be summarised on the character sheet output.")
         Console.WriteLine()
-        Console.WriteLine("Your squire's name is " & charSquire(0) & ". Choose a skill for him to be vaguely okay at:")
+        If tradWoman Then
+            Console.WriteLine("Your lady-in-waiting's name is " & charSquire(0) & ". Choose a skill for her to be vaguely okay at:")
+            Console.WriteLine("(The rules are a little vague about lady-in-waiting skills, so you'll")
+            Console.WriteLine("probably want to run them past your GM after character generation Is done.)")
+        Else
+            Console.WriteLine("Your squire's name is " & charSquire(0) & ". Choose a skill for him to be vaguely okay at:")
+        End If
+
         skArray.Clear()
-        For i = 0 To 31
-            s = charSkills(0, i)
-            If s = "Chirurgery" Or s = "Fashion" Or s = "Industry" Or s = "First Aid" Or s = "Battle" Or s = "Horsemanship" Then
-                'Skip it
-            Else
-                skArray.Add(charSkills(0, i))
-            End If
-        Next
-        For i = 0 To skArray.Count - 1
-            Console.Write(skArray(i))
-            If i = skArray.Count - 1 Then
-                Console.Write(".")
-            Else
-                Console.Write(", ")
-            End If
-        Next
-        Console.WriteLine()
+        If tradWoman Then
+            skArray = SkillLister(sList, "", "", False)
+        Else
+            skArray = SkillLister(sList, "", False, "")
+        End If
+        PrintSkillList(skArray)
+        x = skArray.IndexOf("Religion (xx)")
+        skArray(x) = charSkills(0, 21)
+
         s = Nothing
         Do
             s = Console.ReadLine
             s = StrConv(s, VbStrConv.ProperCase)
             If s = "Read" Then
-                s = charSkills(0, 18)
+                s = charSkills(0, 19)
             ElseIf s = "Play" Then
-                s = charSkills(0, 17)
+                s = charSkills(0, 18)
             ElseIf s = "Religion" Then
-                s = charSkills(0, 20)
+                s = charSkills(0, 21)
             End If
             If Not skArray.Contains(s) Then
                 s = Nothing
@@ -404,8 +415,18 @@
         'STUFF goes here but it's entirely standard.
         Console.WriteLine()
         Console.Write("You have inherited something from your deceased father: ")
-        s = HeirloomGenerator()
-        charHeirloom = s
+        If charReligion = "pagan" Then
+            s = HeirloomGenerator(hList, True, True)
+        Else
+            s = HeirloomGenerator(hList, False, True)
+        End If
+        x = InStr(s, "//")
+        If x > 0 Then
+            charHeirlooms.Add(Left(s, x - 1))
+            charHeirlooms.Add(Mid(s, x + 2))
+        Else
+            charHeirlooms.Add(s)
+        End If
 
         'A quick bit to count extra horses.
         skArray.Clear()
@@ -425,6 +446,7 @@
         End If
 
         'And now back to your regularly-scheduled heirloom announcement.
+        s = Replace(s, "//", " AND ")
         Console.Write(s & ".")
         Console.WriteLine()
 
@@ -490,7 +512,7 @@
         Else
             Console.WriteLine("Thanks to " & xhis & " APP of " & charAPP & ", " & charName & " has " & x & " distinctive features:")
         End If
-        charFeatures = "Something about their "
+        charFeatures = $"Something about {xhis} "
 
         Dim fArray As New ArrayList()
         fArray.Add("hair")
@@ -507,9 +529,9 @@
             If i = x Then
                 charFeatures = charFeatures & "."
             ElseIf i = (x - 1) Then
-                charFeatures = charFeatures & " and their "
+                charFeatures = charFeatures & $" and {xhis} "
             Else
-                charFeatures = charFeatures & ", their "
+                charFeatures = charFeatures & $", {xhis} "
             End If
         Next i
         Console.WriteLine(charFeatures)
@@ -554,11 +576,20 @@
 
         x2 = x2 + x
         Console.WriteLine("Your personal army consists of:")
+        s2 = s
+        s = ""
+
         If x2 > 1 Then
-            Console.WriteLine(x2 & " family knights" & s & ", plus yourself.")
+            s = x2 & " family knights " & s2
         Else
-            Console.WriteLine("one young family knight, plus yourself")
+            s = "1 young family knight"
         End If
+        If Not tradWoman Then
+            s = s & ", plus yourself."
+        Else
+            s = s & "."
+        End If
+        Console.WriteLine(s)
         Console.WriteLine(charLineageMen & " lineage men.")
         Console.WriteLine(charLevies & " levies.")
 
@@ -570,6 +601,21 @@
             s = Console.ReadLine()
         Loop While s Is Nothing
 
+    End Sub
+
+    Sub PrintSkillList(skArray As ArrayList)
+        Dim c As Integer
+        c = 0
+        For i = 0 To skArray.Count - 1
+            Console.Write(skArray(i))
+            c += 1
+            If c < 4 And i <> skArray.Count - 1 Then
+                Console.Write(", ")
+            Else
+                c = 0
+                Console.WriteLine()
+            End If
+        Next
     End Sub
 
     Function SkillUpdater(inString As String, sArray As String(,), Optional limited As Integer = -1) As String(,)
@@ -698,204 +744,25 @@
         SpecialGiftGenerator = s 
     End Function
 
-    Function HeirloomGenerator(Optional pagan As Boolean = False, Optional recurse As Boolean = False) As String
-        Dim s As String = ""
+    Function InitialiseCharSkills(f As String, Optional gender As String = "male") As String(,)
+        Dim skArray As New ArrayList
+        Dim skXML As New Xml.XmlDocument
+        Dim skNode As Xml.XmlElement
         Dim x As Integer
+        Dim xp As String
+        Dim sName As String
 
-        x = DiceRoller(1, 20)
-        Do While (pagan And x = 8) Or (recurse And x = 20)
-            x = DiceRoller(1, 20)
-        Loop
-        Select Case x
-            Case 1
-                s = DiceRoller(3, 20) & "d in cash"
-            Case 2
-                s = (DiceRoller(3, 20) + 100) & "d in cash"
-            Case 3
-                s = (DiceRoller(3, 20) + 100) & "d in cash"
-            Case 4
-                s = "£1 in cash"
-            Case 5
-                s = "£1 in cash"
-            Case 6
-                s = "£1 in cash"
-            Case 7
-                s = "£" & DiceRoller(1, 6) & " in cash"
-            Case 8
-                s = "a sacred Christian relic -- "
-                Select Case DiceRoller(1, 6)
-                    Case 1
-                        s = s & "a finger"
-                    Case 2
-                        s = s & "some tears"
-                    Case 3
-                        s = s & "some hair"
-                    Case 4
-                        s = s & "some hair"
-                    Case 5
-                        s = s & "a bone fragment"
-                    Case 6
-                        s = s & "some blood"
-                End Select
-            Case 9
-                s = "an ancient bronze sword worth £2 (+1 to Sword skill, breaks in combat as if it wasn't a sword)"
-        Case 10
-                s = "a blessed lance worth 25d (+1 to Lance skill)"
-            Case 11
-                s = "a decorated saddle worth £1"
-            Case 12
-                s = "an engraved ring worth "
-                Select Case DiceRoller(1, 3)
-                    Case 1
-                        s = s & "120d"
-                    Case 2
-                        s = s & "120d"
-                    Case 3
-                        s = s & "£2"
-                End Select
-            Case 13
-                Select Case DiceRoller(1, 6)
-                    Case 1
-                        s = "a gold armband worth £8"
-                    Case Else
-                        s = "a silver armband worth £1"
-                End Select
-            Case 14
-                s = "a valuable cloak from "
-                Select Case DiceRoller(1, 6)
-                    Case 1
-                        s = s & "Byzantium"
-                    Case 2
-                        s = s & "Byzantium"
-                    Case 3
-                        s = s & "Germany"
-                    Case 4
-                        s = s & "Spain"
-                    Case 5
-                        s = s & "Spain"
-                    Case 6
-                        s = s & "Rome"
-                End Select
-                s = s & " worth £1"
-            Case 15
-                s = "a magic healing potion (!) which cures 1d6 damage, once"
-            Case 16
-                s = "an extra rouncy"
-            Case 17
-                s = "an extra rouncy"
-            Case 18
-                s = "a second charger"
-            Case 19
-                s = "a courser"
-            Case 20
-                s = HeirloomGenerator(pagan, True) & "; AND " & HeirloomGenerator(pagan, True)
-        End Select
-
-        HeirloomGenerator = s
-    End Function
-
-    Function InitialiseCharSkills(Optional gender As String = "male") As String(,)
-        Dim a As String(,) = New String(1, 31) {}
-        a(0, 0) = "Awareness"
-        a(0, 1) = "Boating"
-        a(0, 2) = "Chirurgery"
-        a(0, 3) = "Compose"
-        a(0, 4) = "Courtesy"
-        a(0, 5) = "Dancing"
-        a(0, 6) = "Faerie Lore"
-        a(0, 7) = "Falconry"
-        a(0, 8) = "Fashion"
-        a(0, 9) = "First Aid"
-        a(0, 10) = "Flirting"
-        a(0, 11) = "Folk Lore"
-        a(0, 12) = "Gaming"
-        a(0, 13) = "Heraldry"
-        a(0, 14) = "Industry"
-        a(0, 15) = "Intrigue"
-        a(0, 16) = "Orate"
-        a(0, 17) = "Play (Harp)"
-        a(0, 18) = "Read (Latin)"
-        a(0, 19) = "Recognise"
-        a(0, 20) = "Religion (xx)"
-        a(0, 21) = "Romance"
-        a(0, 22) = "Singing"
-        a(0, 23) = "Stewardship"
-        a(0, 24) = "Swimming"
-        a(0, 25) = "Tourney"
-        a(0, 26) = "Battle"
-        a(0, 27) = "Horsemanship"
-        a(0, 28) = "Sword"
-        a(0, 29) = "Lance"
-        a(0, 30) = "Spear"
-        a(0, 31) = "Dagger"
-
-        If gender = "male" Then
-            a(1, 0) = "5"
-            a(1, 1) = "1"
-            a(1, 2) = "0"
-            a(1, 3) = "1"
-            a(1, 4) = "3"
-            a(1, 5) = "2"
-            a(1, 6) = "1"
-            a(1, 7) = "3"
-            a(1, 8) = "0"
-            a(1, 9) = "10"
-            a(1, 10) = "3"
-            a(1, 11) = "2"
-            a(1, 12) = "3"
-            a(1, 13) = "3"
-            a(1, 14) = "0"
-            a(1, 15) = "3"
-            a(1, 16) = "3"
-            a(1, 17) = "3"
-            a(1, 18) = "0"
-            a(1, 19) = "3"
-            a(1, 20) = "2"
-            a(1, 21) = "2"
-            a(1, 22) = "2"
-            a(1, 23) = "2"
-            a(1, 24) = "2"
-            a(1, 25) = "2"
-            a(1, 26) = "10"
-            a(1, 27) = "10"
-            a(1, 28) = "10"
-            a(1, 29) = "10"
-            a(1, 30) = "6"
-            a(1, 31) = "5"
-        Else
-            a(1, 0) = "2"
-            a(1, 1) = "0"
-            a(1, 2) = "10"
-            a(1, 3) = "1"
-            a(1, 4) = "5"
-            a(1, 5) = "2"
-            a(1, 6) = "3"
-            a(1, 7) = "2"
-            a(1, 8) = "2"
-            a(1, 9) = "10"
-            a(1, 10) = "5"
-            a(1, 11) = "2"
-            a(1, 12) = "3"
-            a(1, 13) = "1"
-            a(1, 14) = "5"
-            a(1, 15) = "2"
-            a(1, 16) = "2"
-            a(1, 17) = "3"
-            a(1, 18) = "1"
-            a(1, 19) = "2"
-            a(1, 20) = "2"
-            a(1, 21) = "2"
-            a(1, 22) = "3"
-            a(1, 23) = "5"
-            a(1, 24) = "1"
-            a(1, 25) = "1"
-            a(1, 26) = "1"
-            a(1, 27) = "3"
-            a(1, 28) = "0"
-            a(1, 29) = "0"
-            a(1, 30) = "0"
-            a(1, 31) = "5"
-        End If
+        skXML.Load(f)
+        skArray = SkillLister(f)
+        Dim a As String(,) = New String(1, skArray.Count - 1) {}
+        For i = 0 To skArray.Count - 1
+            sName = skArray(i)
+            a(0, i) = sName
+            xp = $"//skill[@name='{sName}']/start_value"
+            skNode = skXML.SelectSingleNode(xp)
+            x = skNode.GetAttribute(gender)
+            a(0, 1) = x
+        Next
 
         InitialiseCharSkills = a
     End Function
