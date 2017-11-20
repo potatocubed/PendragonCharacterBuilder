@@ -1,0 +1,33 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="440">
+  <events>
+  	  <text>{grandfatherName}</text>
+	  <event dice_min="1" dice_max="1">
+		  <text dies="true">met his end. MISCDEATH</text>
+	  </event>
+	  <event dice_min="2" dice_max="9">
+		  <text dies="true" glory="20">served garrison duty and was killed by Picts.</text>
+	  </event>
+	  <event dice_min="10" dice_max="18">
+		  <text glory="10">served garrison duty and fought Picts.</text>
+	  </event>
+	  <event dice_min="19" dice_max="19">
+		  <text passion="1">was present at the murder of King Constantin but unable to protect him.</text>
+	  </event>
+	  <event dice_min="20" dice_max="20">
+		  <text passion="2" dies="true" glory="1000">was present at the murder of King Constantin and died trying to protect him.</text>
+	  </event>
+  </events>
+  <passion id="1">
+	  <p-event dice_min="1" dice_max="10"/>
+	  <p-event dice_min="11" dice_max="20">
+		  <text value="1d6" modifier="6">DT/Suspicion (Silchester Knights)/</text>
+	  </p-event>
+  </passion>
+  <passion id="1">
+	  <p-event dice_min="1" dice_max="2"/>
+	  <p-event dice_min="3" dice_max="20">
+		  <text value="1d6" modifier="6">DT/Suspicion (Silchester Knights)/</text>
+	  </p-event>
+  </passion>
+</year>

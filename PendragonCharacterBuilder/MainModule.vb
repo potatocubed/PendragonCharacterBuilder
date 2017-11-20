@@ -35,7 +35,11 @@
         Dim charFeatures As String
         Dim charSkills As String(,)
         Dim charGlory As Integer
-        Dim charHorses As String() = {"Charger #1", "Rouncy #1", "Rouncy #2", "Sumpter #1", "", ""}
+        Dim charHorses As New ArrayList()
+        charHorses.Add("Charger")
+        charHorses.Add("Rouncy")
+        charHorses.Add("Rouncy")
+        charHorses.Add("Sumpter")
         Dim charSquire As String() = {RandomName(), "15", "First Aid", "6", "Battle", "1", "Horsemanship", "6", "xx", "5"}
         Dim charHeirlooms As New ArrayList   'Because you can have more than one!
         Dim charFamilyCharacteristic As String
@@ -428,20 +432,12 @@
         End If
 
         'A quick bit to count extra horses.
-        skArray.Clear()
-        If InStr(s, "charger") Then skArray.Add("Charger #2")
-        If InStr(s, "courser") Then skArray.Add("Courser #1")
+        If InStr(s, "charger") Then charHorses.Add("Charger")
+        If InStr(s, "courser") Then charHorses.Add("Courser")
         x2 = InStr(s, "rouncy")
         If x2 > 0 Then
-            skArray.Add("Rouncy #3")
-            If InStr(x2 + 1, s, "rouncy") Then skArray.Add("Rouncy #4")
-        End If
-
-        x2 = charHorses.Count
-        If skArray.Count > 0 Then
-            For i = 0 To skArray.Count - 1
-                charHorses(4 + i) = skArray(i)
-            Next
+            charHorses.Add("Rouncy")
+            If InStr(x2 + 1, s, "rouncy") Then charHorses.Add("Rouncy")
         End If
 
         'And now back to your regularly-scheduled heirloom announcement.
