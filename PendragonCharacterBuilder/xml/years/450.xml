@@ -1,0 +1,18 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="450">
+  <events>
+	  <text>{grandfatherName}</text>
+	  <event dice_min="1" dice_max="1">
+		  <text dies="true">met his end. MISCDEATH</text>
+	  </event>
+	  <event dice_min="2" dice_max="5">
+		  <text>NOTHINGYEAR</text>
+	  </event>
+	  <event dice_min="6" dice_max="18">
+		  <text glory="25">attended the wedding of King Vortigern and the Saxon Princess Rowena.</text>
+	  </event>
+	  <event dice_min="19" dice_max="20">
+		  <text glory="50">attended the wedding of King Vortigern and the Saxon Princess Rowena -- and noticed that Rowena was already pregnant.</text>
+	  </event>
+  </events>
+</year>

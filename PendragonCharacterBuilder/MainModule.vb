@@ -77,8 +77,8 @@
         'DEBUG
         here = "C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
 
-        Dim sList As String = here & "\pdcc_skill_list.xml"
-        Dim hList As String = here & "\pdcc_heirlooms.xml"
+        Dim sList As String = here & "\xml\pdcc_skill_list.xml"
+        Dim hList As String = here & "\xml\pdcc_heirlooms.xml"
 
         Console.WriteLine("Welcome to the Pendragon character generator!")
         Console.WriteLine("This program will basically hammer through all the random tables in the")

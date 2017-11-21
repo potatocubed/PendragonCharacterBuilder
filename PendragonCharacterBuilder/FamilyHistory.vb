@@ -26,6 +26,8 @@
         Dim fhm As String = ""
         Dim x As Integer
 
+        Dim familyDissident As Boolean = False
+
         charName = charName_x
         fatherName = fatherName_x
         grandfatherName = grandfatherName_x
@@ -34,8 +36,41 @@
         For i = 439 To 463
             'Look for the year file. If it exists, run it. If it doesn't exist, skip.
             'Check for birth year and add details as appropriate.
-            If IO.File.Exists(here & "\" & CStr(i) & ".xml") And grandfatherAlive Then
+            If IO.File.Exists(here & "\xml\years\" & CStr(i) & ".xml") And grandfatherAlive Then
                 fhm = fhm & YearGen(here, i, grandfatherGlory, grandfatherAlive)
+            End If
+
+            'Here commences the big list of special cases.
+            If i = 447 Then
+                familyDissident = Dissidence(i, familyDissident)
+                If familyDissident Then
+                    If Not InStr(fhm, "447") > 0 Then
+                        fhm = fhm & "447-449: "
+                    End If
+                    fhm = fhm & "The family's grumbling about Vortigern's decisions got them labelled as dissidents." & vbNewLine & vbNewLine
+                End If
+            End If
+
+            If i = 450 Then
+                If familyDissident Then
+                    familyDissident = Dissidence(i, familyDissident)
+                    If familyDissident Then
+                        If Not InStr(fhm, "450") > 0 Then
+                            fhm = fhm & "450: "
+                        End If
+                        fhm = fhm & "The family became some of the lead instigators in the rebellion against Vortigern's rule." & vbNewLine & vbNewLine
+                    End If
+                Else
+                    If Not InStr(fhm, "450") > 0 Then
+                        fhm = fhm & "450: "
+                    End If
+                    familyDissident = Dissidence(i, familyDissident)
+                    If familyDissident Then
+                        fhm = fhm & "The family's grumbling about Vortigern's decisions got them labelled as dissidents." & vbNewLine & vbNewLine
+                    Else
+                        fhm = fhm & "The family's staunch loyalty to Vortigern in this trying year did not go unnoticed!" & vbNewLine & vbNewLine
+                    End If
+                End If
             End If
         Next
 
@@ -47,6 +82,42 @@
         fhm = Replace(fhm, "{grandfatherName}", grandfatherName)
 
         FamilyHistoryMaker = fhm
+    End Function
+
+    Function Dissidence(y As Integer, famDiss As Boolean) As Boolean
+        Dim s As String
+
+        If y = 447 Then
+            Console.WriteLine()
+            Console.WriteLine("In 447 King Vortigern's habit of importing Saxons to fight his (admittedly successful)")
+            Console.WriteLine("wars against the Picts aggravated many British families. Is yours among them? [y or n]")
+        ElseIf y = 450 Then
+            Console.WriteLine()
+            Console.WriteLine("In 450 more and more families felt that King Vortigern favoured the Saxons over his")
+            Console.Write("own people. ")
+            If famDiss Then
+                Console.Write("Did your family step up and lead the rebellion? [y or n]")
+            Else
+                Console.Write("Was your family among them? [y or n]")
+            End If
+            Console.WriteLine()
+        End If
+        s = ""
+        Do
+            s = Console.ReadLine()
+            s = Left(s, 1)
+            s = LCase(s)
+            If s <> "y" And s <> "n" Then
+                Console.WriteLine("Please enter y or n.")
+                s = ""
+            End If
+        Loop While s = ""
+
+        If s = "y" Then
+            Dissidence = True
+        Else
+            Dissidence = False
+        End If
     End Function
 
     Function YearGen(here As String, y As Integer, ByRef glory As Integer, ByRef lifedeath As Boolean) As String
