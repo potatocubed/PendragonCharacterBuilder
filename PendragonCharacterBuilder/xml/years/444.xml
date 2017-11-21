@@ -8,7 +8,6 @@
 	  <event dice_min="2" dice_max="2">
 		  <text glory="10" dies="true">served garrison duty and was killed by raiders.</text>
 	  </event>
-	  </event>
 	  <event dice_min="3" dice_max="16">
 		  <text glory="10" dies="true">served garrison duty and fought raiders.</text>
 	  </event>

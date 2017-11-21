@@ -1,0 +1,21 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="469-472">
+	<events>
+		<text>{fatherName}</text>
+		<event dice_min="1" dice_max="1">
+			<text dies="true">met his end. MISCDEATH</text>
+		</event>
+		<event dice_min="2" dice_max="5">
+			<text glory="25">raided and defended, on and off.</text>
+		</event>
+		<event dice_min="6" dice_max="10">
+			<text glory="50">raided and defended, on and off.</text>
+		</event>
+		<event dice_min="11" dice_max="15">
+			<text glory="100">raided and defended, on and off.</text>
+		</event>
+		<event dice_min="16" dice_max="20">
+			<text glory="200">raided and defended, on and off.</text>
+		</event>
+	</events>
+</year>

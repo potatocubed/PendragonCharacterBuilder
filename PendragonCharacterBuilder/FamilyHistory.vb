@@ -1,6 +1,7 @@
 ﻿Module FamilyHistory
     Dim charName As String
     Dim fatherName As String
+    Dim motherName As String = RandomName("female")
     Dim grandfatherName As String
     Dim fatherGlory As Integer = 0
     Dim grandfatherGlory As Integer = (((DiceRoller(1, 20) * 100) + 1000) / 10) + DiceRoller(2, 20)
@@ -9,13 +10,15 @@
     Dim passionArray As New ArrayList
     Dim extraHeirlooms As Integer = 0
     Dim charBirthYear As Integer = 0
+    Dim familyDissident As Boolean = False
+    Dim familyRebel As Boolean = False
 
     Sub Main()
-        'FamilyHistoryMaker("C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder",
-        '                  "Steve", "Bob", "Grand-Bob", 464)
+        FamilyHistoryMaker("C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder",
+                          "Steve", "Bob", "Grand-Bob", 464)
 
-        FamilyHistoryMaker("C:\Users\Chris\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder",
-                           "Steve", "Bob", "Grand-Bob", 464)
+        'FamilyHistoryMaker("C:\Users\Chris\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder",
+        '                  "Steve", "Bob", "Grand-Bob", 464)
     End Sub
 
     Public Function FamilyHistoryMaker(here As String, charName_x As String, fatherName_x As String,
@@ -25,8 +28,6 @@
         Dim s As String = ""
         Dim fhm As String = ""
         Dim x As Integer
-
-        Dim familyDissident As Boolean = False
 
         charName = charName_x
         fatherName = fatherName_x
@@ -40,42 +41,70 @@
                 fhm = fhm & YearGen(here, i, grandfatherGlory, grandfatherAlive)
             End If
 
-            'Here commences the big list of special cases.
-            If i = 447 Then
-                familyDissident = Dissidence(i, familyDissident)
-                If familyDissident Then
-                    If Not InStr(fhm, "447") > 0 Then
-                        fhm = fhm & "447-449: "
-                    End If
-                    fhm = fhm & "The family's grumbling about Vortigern's decisions got them labelled as dissidents." & vbNewLine & vbNewLine
-                End If
-            End If
+            'DEBUG
+            'grandfatherAlive = True
 
-            If i = 450 Then
-                If familyDissident Then
+            'Here commences the big list of special cases.
+            If grandfatherAlive Then
+                If i = 447 Then
                     familyDissident = Dissidence(i, familyDissident)
                     If familyDissident Then
+                        If Not InStr(fhm, "447") > 0 Then
+                            fhm = fhm & "447-449: "
+                        End If
+                        fhm = fhm & "The family's grumbling about Vortigern's decisions got them labelled as dissidents." & vbNewLine & vbNewLine
+                    End If
+                End If
+
+                If i = 450 Then
+                    If familyDissident Then
+                        If Dissidence(i, familyDissident) Then
+                            If Not InStr(fhm, "450") > 0 Then
+                                fhm = fhm & "450: "
+                            End If
+                            fhm = fhm & "The family became some of the lead instigators in the rebellion against Vortigern's rule." & vbNewLine & vbNewLine
+                            familyRebel = True
+                        End If
+                    Else
                         If Not InStr(fhm, "450") > 0 Then
                             fhm = fhm & "450: "
                         End If
-                        fhm = fhm & "The family became some of the lead instigators in the rebellion against Vortigern's rule." & vbNewLine & vbNewLine
-                    End If
-                Else
-                    If Not InStr(fhm, "450") > 0 Then
-                        fhm = fhm & "450: "
-                    End If
-                    familyDissident = Dissidence(i, familyDissident)
-                    If familyDissident Then
-                        fhm = fhm & "The family's grumbling about Vortigern's decisions got them labelled as dissidents." & vbNewLine & vbNewLine
-                    Else
-                        fhm = fhm & "The family's staunch loyalty to Vortigern in this trying year did not go unnoticed!" & vbNewLine & vbNewLine
+                        If Dissidence(i, familyDissident) Then
+                            fhm = fhm & "The family's grumbling about Vortigern's decisions got them labelled as dissidents." & vbNewLine & vbNewLine
+                            familyDissident = True
+                        Else
+                            fhm = fhm & "The family's staunch loyalty to Vortigern in this trying year did not go unnoticed!" & vbNewLine & vbNewLine
+                            familyDissident = False
+                        End If
                     End If
                 End If
             End If
+            If i = 460 Then fatherGlory = (Math.Round(grandfatherGlory / 10)) + 1000
+            If i = charBirthYear Then
+                If Not InStr(fhm, CStr(i)) Then
+                    fhm = fhm & CStr(i) & ": "
+                End If
+                fhm = fhm & $"In this year {fatherName} married {motherName}, a widow, and produced an heir: {charName}." & vbNewLine & vbNewLine
+                x = DiceRoller(1, 20)
+                If x <= 4 Then
+                    fatherGlory += 25
+                ElseIf x <= 7 Then
+                    fatherGlory += 50
+                ElseIf x <= 17 Then
+                    fatherGlory += 100
+                ElseIf x <= 19 Then
+                    fatherGlory += 200
+                Else
+                    fatherGlory += 350
+                End If
+            End If
+            If i = 463 Then PassionInheritor()
         Next
 
         For i = 464 To 484
-
+            If IO.File.Exists(here & "\xml\years\" & CStr(i) & ".xml") And fatherAlive Then
+                fhm = fhm & YearGen(here, i, fatherGlory, fatherAlive)
+            End If
         Next
 
         fhm = Replace(fhm, "{fatherName}", fatherName)
@@ -83,6 +112,100 @@
 
         FamilyHistoryMaker = fhm
     End Function
+
+    Sub PassionInheritor()
+        Dim s As String
+        Dim s2 As String
+        Dim x As Integer
+        Dim value As Integer
+
+        ConsolidatePassions()
+
+        Console.WriteLine()
+        Console.WriteLine("Your father can inherit some, all, or none of the family traits.")
+        Console.WriteLine("One by one, please choose whether or not to keep [y] or drop [n] the trait.")
+
+        Dim stopCount As Integer = passionArray.Count - 1
+        For i = 0 To stopCount
+            s = Mid(passionArray(i), 4)
+            x = InStr(s, "/")
+            value = CInt(Mid(s, x + 1))
+            s = Left(s, x - 1)
+
+            Console.WriteLine($"Keep ""{s}: {value}""?")
+            s2 = ""
+            Do
+                s2 = Console.ReadLine
+                s2 = Left(s2, 1)
+                s2 = LCase(s2)
+                If s2 = "k" Then s2 = "y"
+                If s2 = "d" Then s2 = "n"
+                If s2 <> "y" And s2 <> "n" Then
+                    Console.WriteLine("Please choose y or n.")
+                    s2 = ""
+                End If
+            Loop While s2 = ""
+            If s2 = "n" Then
+                passionArray.RemoveAt(i)
+                i = i - 1
+                stopCount = stopCount - 1
+            End If
+            If i >= stopCount Then Exit For
+        Next
+
+    End Sub
+
+    Sub ConsolidatePassions()
+        Dim s As String
+        Dim s2 As String
+        Dim x As Integer
+        Dim x2 As Integer
+        Dim x3 As Integer
+        Dim passValue As Integer
+        Dim passValue2 As Integer
+        Dim stopValue As Integer
+        Dim i As Integer
+        Dim j As Integer
+
+        'passionArray.Add("PA/Hate (Saxons)/13")
+        'passionArray.Add("PA/Hate (Saxons)/14")
+        'passionArray.Add("PA/Hate (Saxons)/12")
+        stopValue = passionArray.Count - 1
+
+        i = 0
+        Do While i <= stopValue
+            s = passionArray(i)
+            x2 = passionArray.IndexOf(s)
+            s = Mid(s, 4)
+            x = InStrRev(s, "/")
+            passValue = Mid(s, x + 1)
+            s = Left(s, x - 1)
+            j = 0
+            Do While j <= stopValue
+                s2 = passionArray(j)
+                x3 = passionArray.IndexOf(s2)
+                If x2 <> x3 Then
+                    s2 = Mid(s2, 4)
+                    x = InStrRev(s2, "/")
+                    passValue2 = Mid(s2, x + 1)
+                    s2 = Left(s2, x - 1)
+                    If s = s2 Then
+                        If passValue >= passValue2 Then
+                            passionArray.RemoveAt(x3)
+                            stopValue -= 1
+                        Else
+                            passionArray.RemoveAt(x2)
+                            stopValue -= 1
+                            j = j - 1
+                            i = i - 1
+                        End If
+                    End If
+                End If
+                j = j + 1
+            Loop
+            i = i + 1
+        Loop
+    End Sub
 
     Function Dissidence(y As Integer, famDiss As Boolean) As Boolean
         Dim s As String
@@ -132,15 +255,44 @@
         Dim x As Integer = DiceRoller(1, 20)
         Dim passionTracker As String = ""
         Dim g1 As Integer, g2 As Integer, g3 As Double
+        Dim events As String = "events"
 
-        yXML.Load(here & "\" & CStr(y) & ".xml")
+        yXML.Load(here & "\xml\years\" & CStr(y) & ".xml")
         yElem = yXML.SelectSingleNode("/year")
         s = yElem.GetAttribute("n")
         yg = $"{s}:"
 
+        'Check for the branching years and apply branch modifiers.
+        If yElem.GetAttribute("branch") = "true" Then
+            'The branch options vary based on year.
+            If y = 451 Then
+                If familyDissident Then
+                    events = "events[@branch='b']"
+                Else
+                    events = "events[@branch='a']"
+                End If
+            End If
+            If y = 457 Then
+                If familyRebel Then
+                    events = "events[@branch='c']"
+                ElseIf familyDissident Then
+                    events = "events[@branch='a']"
+                Else
+                    events = "events[@branch='b']"
+                End If
+            End If
+            If y = 460 Then
+                If grandfatherAlive Then
+                    events = "events[@branch='a']"
+                Else
+                    events = "events[@branch='b']"
+                End If
+            End If
+        End If
+
         'If there's an events/text then that always displays.
         Try
-            yNode = yXML.SelectSingleNode("//events/text/node()")
+            yNode = yXML.SelectSingleNode($"//{events}/text/node()")
             s = yNode.Value
         Catch ex As Exception
             s = ""
@@ -148,9 +300,14 @@
         yg = $"{yg} {s}"
 
         'On to the year's event.
-        yElem = yXML.SelectSingleNode($"//event[@dice_min <= {x} and @dice_max >= {x}]/text")
+        yElem = yXML.SelectSingleNode($"//{events}/event[@dice_min <= {x} and @dice_max >= {x}]/text")
         yNode = yElem.SelectSingleNode("./text()")
-        s = yNode.Value
+        Try
+            s = yNode.Value
+        Catch ex As Exception
+            'Do nothing
+        End Try
+
         If yElem.GetAttribute("glory") <> "" Then
             glory += CInt(yElem.GetAttribute("glory"))
         End If
@@ -177,9 +334,13 @@
             x = DiceRoller(1, 20)
             yElem2 = yXML.SelectSingleNode($"//b-event[@dice_min <= {x} and @dice_max >= {x}]/text")
             yNode = yElem2.SelectSingleNode("./text()")
-            s = s & yNode.Value
+            Try
+                s = s & yNode.Value
+            Catch ex As Exception
+                'Do nothing.
+            End Try
             If yElem2.GetAttribute("glory") <> "" Then
-                glory += CInt(yElem.GetAttribute("glory"))
+                glory += CInt(yElem2.GetAttribute("glory"))
             End If
             If yElem2.GetAttribute("dies") = "true" Then
                 lifedeath = False
@@ -193,8 +354,8 @@
             yElem = yXML.SelectSingleNode($"//passion[@id='{passionTracker}']")
             x = DiceRoller(1, 20)
             yElem2 = yXML.SelectSingleNode($"//p-event[@dice_min <= {x} and @dice_max >= {x}]/text")
-            yNode = yElem2.SelectSingleNode("./text()")
             Try
+                yNode = yElem2.SelectSingleNode("./text()")
                 s2 = yElem2.GetAttribute("value")
                 g1 = DiceRoller(CInt(Left(s2, 1)), CInt(Mid(s2, 3)))
                 If yElem2.GetAttribute("modifier") <> "" Then

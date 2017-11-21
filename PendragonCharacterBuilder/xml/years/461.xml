@@ -1,0 +1,26 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="461-462">
+	<events>
+		<text>{grandfatherName}</text>
+		<event dice_min="1" dice_max="1">
+			<text dies="true">met his end. MISCDEATH</text>
+		</event>
+		<event dice_min="2" dice_max="5">
+			<text>NOTHINGYEAR</text>
+		</event>
+		<event dice_min="6" dice_max="20">
+			<text battle="Cambridge">fought against Vortigern at the Battle of Cambridge</text>
+		</event>
+	</events>
+	<battle name="Cambridge" glory-die="1d6" glory-flat="30" glory-multiplier="1">
+		<b-event dice_min="1" dice_max="1">
+			<text dies="true" glory="1000">where he died, gloriously.</text>
+		</b-event>
+		<b-event dice_min="2" dice_max="3">
+			<text dies="true">, where he died.</text>
+		</b-event>
+		<b-event dice_min="4" dice_max="20">
+			<text glory="10">.</text>
+		</b-event>
+	</battle>
+</year>

@@ -1,0 +1,14 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="463" branch="true">
+	<events>
+		<text>{grandfatherName} attended Vortigern's feast of peace and was murdered by Saxons for his trouble.</text>
+		<event dice_min="1" dice_max="20">
+			<text dies="true" passion="1"/>
+		</event>
+	</events>
+	<passion id="1">
+		<p-event dice_min="1" dice_max="20">
+			<text value="3d6" modifier="6">PA/Hate (Saxons)/</text>
+		</p-event>
+	</passion>
+</year>

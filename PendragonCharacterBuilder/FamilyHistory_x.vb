@@ -160,57 +160,7 @@
         End If
     End Function
 
-    Sub ConsolidatePassions()
-        Dim s As String
-        Dim s2 As String
-        Dim x As Integer
-        Dim x2 As Integer
-        Dim x3 As Integer
-        Dim passValue As Integer
-        Dim passValue2 As Integer
-        Dim stopValue As Integer
-        Dim i As Integer
-        Dim j As Integer
 
-        'passionArray.Add("PA/Hate (Saxons)/13")
-        'passionArray.Add("PA/Hate (Saxons)/14")
-        'passionArray.Add("PA/Hate (Saxons)/12")
-        stopValue = passionArray.Count - 1
-
-        i = 0
-        Do While i <= stopValue
-            s = passionArray(i)
-            x2 = passionArray.IndexOf(s)
-            s = Mid(s, 4)
-            x = InStrRev(s, "/")
-            passValue = Mid(s, x + 1)
-            s = Left(s, x - 1)
-            j = 0
-            Do While j <= stopValue
-                s2 = passionArray(j)
-                x3 = passionArray.IndexOf(s2)
-                If x2 <> x3 Then
-                    s2 = Mid(s2, 4)
-                    x = InStrRev(s2, "/")
-                    passValue2 = Mid(s2, x + 1)
-                    s2 = Left(s2, x - 1)
-                    If s = s2 Then
-                        If passValue >= passValue2 Then
-                            passionArray.RemoveAt(x3)
-                            stopValue -= 1
-                        Else
-                            passionArray.RemoveAt(x2)
-                            stopValue -= 1
-                            j = j - 1
-                            i = i - 1
-                        End If
-                    End If
-                End If
-                j = j + 1
-            Loop
-            i = i + 1
-        Loop
-    End Sub
 
     Function Year461() As String
         Dim s As String = ""

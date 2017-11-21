@@ -1,0 +1,18 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="460" branch="true">
+	<events branch="a">
+		<text>In this year {fatherName} reached his majority and was knighted. He and {grandfatherName} served garrison duty.</text>
+		<event dice_min="1" dice_max="1">
+			<text dies="true">where {grandfatherName} met his end. MISCDEATH</text>
+		</event>
+		<event dice_min="2" dice_max="20">
+			<text/>
+		</event>
+	</events>
+	<events branch="b">
+		<text>In this year {fatherName} reached his majority and was knighted.</text>
+		<event dice_min="1" dice_max="20">
+			<text/>
+		</event>
+	</events>
+</year>

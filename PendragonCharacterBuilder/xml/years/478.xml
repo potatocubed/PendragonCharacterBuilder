@@ -1,0 +1,37 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="478-479">
+	<events>
+		<text>{fatherName}</text>
+		<event dice_min="1" dice_max="1">
+			<text dies="true">met his end. MISCDEATH</text>
+		</event>
+		<event dice_min="2" dice_max="6">
+			<text battle="raids">served garrison duty and defended against the Saxon raids on Salisbury. </text>
+		</event>
+		<event dice_min="7" dice_max="20">
+			<text battle="Frisia" glory="25">sailed with the High King's fleet to Frisia</text>
+		</event>
+	</events>
+	<battle name="raids" glory-die="1d6" glory-flat="20" glory-multiplier="1">
+		<b-event dice_min="1" dice_max="1">
+			<text glory="1000" dies="true">He died gloriously.</text>
+		</b-event>
+		<b-event dice_min="2" dice_max="5">
+			<text dies="true">He died.</text>
+		</b-event>
+		<b-event dice_min="6" dice_max="20">
+			<text/>
+		</b-event>
+	</battle>
+	<battle name="Frisia" glory-die="1d6" glory-flat="15" glory-multiplier="1">
+		<b-event dice_min="1" dice_max="1">
+			<text glory="1000" dies="true">, where he died gloriously.</text>
+		</b-event>
+		<b-event dice_min="2" dice_max="5">
+			<text dies="true">, where he died.</text>
+		</b-event>
+		<b-event dice_min="6" dice_max="20">
+			<text>.</text>
+		</b-event>
+	</battle>
+</year>

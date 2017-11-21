@@ -1,0 +1,15 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="474-476">
+	<events>
+		<text>{fatherName}</text>
+		<event dice_min="1" dice_max="1">
+			<text dies="true">met his end. MISCDEATH</text>
+		</event>
+		<event dice_min="2" dice_max="4">
+			<text glory="25" dies="true">served garrison duty, where he fought well but died.</text>
+		</event>
+		<event dice_min="5" dice_max="20">
+			<text glory="25">served garrison duty, where he distinguished himself.</text>
+		</event>
+	</events>
+</year>

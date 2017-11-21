@@ -1,0 +1,31 @@
+<!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
+<year n="484">
+	<events>
+		<text>{fatherName}</text>
+		<event dice_min="1" dice_max="1">
+			<text dies="true">met his end. MISCDEATH</text>
+		</event>
+		<event dice_min="2" dice_max="2">
+			<text>NOTHINGYEAR</text>
+		</event>
+		<event dice_min="3" dice_max="20">
+			<text battle="Eburacum">fought in the battle of Eburacum</text>
+		</event>
+	</events>
+	<battle name="Eburacum" glory-die="1d6" glory-flat="30" glory-multiplier="0.5">
+		<b-event dice_min="1" dice_max="1">
+			<text glory="1000" dies="true" passion="1">, where he died gloriously.</text>
+		</b-event>
+		<b-event dice_min="2" dice_max="15">
+			<text dies="true" passion="1">, where he died like almost everyone else.</text>
+		</b-event>
+		<b-event dice_min="16" dice_max="20">
+			<text passion="1">, which he somehow survived.</text>
+		</b-event>
+	</battle>
+	<passion id="1">
+		<p-event dice_min="1" dice_max="20">
+			<text value="1d6" modifier="6">PA/Hate (Saxons)/</text>
+		</p-event>
+	</passion>
+</year>
