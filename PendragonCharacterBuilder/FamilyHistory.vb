@@ -362,7 +362,7 @@
             s3 = yElem2.GetAttribute("glory-die")
             g2 = yElem2.GetAttribute("glory-flat")
             g3 = yElem2.GetAttribute("glory-multiplier")
-            g1 = DiceRoller(CInt(Left(s2, 1)), CInt(Mid(s2, 3)))
+            g1 = DiceRoller(CInt(Left(s3, 1)), CInt(Mid(s3, 3)))
             glory += Math.Round(g1 * g2 * g3)
 
             'Then the battle event.

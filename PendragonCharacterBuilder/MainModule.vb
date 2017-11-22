@@ -650,7 +650,7 @@
             End If
             s = sr.ReadLine
         Loop
-        Do While Left(s, 3) <> "439"
+        Do While Left(s, 3) <> "439" And Left(s, 3 <> "440")
             x = InStr(s, "/")
             s2 = Mid(s, x + 1)
             s = Left(s, x - 1)
