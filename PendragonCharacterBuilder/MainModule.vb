@@ -93,7 +93,7 @@
 
         Dim here As String = My.Computer.FileSystem.CurrentDirectory
         'DEBUG
-        here = "C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
+        here = "C:\Users\Chris\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
 
         Dim sList As String = here & "\xml\pdcc_skill_list.xml"
         Dim hList As String = here & "\xml\pdcc_heirlooms.xml"
@@ -813,19 +813,25 @@
         MiscLifeDetails(here, mAunts, False)
 
         'Commence the export stuff.
+        'Dim charSheet As New Xml.XmlDocument
+
         Dim charSheet As New Xml.XmlDocument
+        Dim cNode As Xml.XmlNode
+        Dim cNode2 As Xml.XmlNode
 
-        charSheet.CreateElement("pdcc_character")
-        charSheet.CreateElement("pdcc_character/character")
+        cNode = charSheet.CreateElement("pdcc_character")
+        charSheet.AppendChild(cNode)
+        cNode2 = charSheet.CreateElement("character")
+        cNode.AppendChild(cNode2)
+        cNode2 = charSheet.CreateElement("history")
+        cNode.AppendChild(cNode2)
+        cNode2 = charSheet.CreateElement("family")
+        cNode.AppendChild(cNode2)
 
-        'Dim sw As IO.StreamWriter
-        'sw = My.Computer.FileSystem.OpenTextFileWriter(here & "\Sir " & charName & ".xml", True)
-        'sw.WriteLine($"<pdcc_character>")
-        'sw.WriteLine($"<character>")
-        'sw.WriteLine($"<name>{charName}</name>")
-        'sw.WriteLine($"</character>")
-        'sw.WriteLine($"</pdcc_character>")
-        'sw.Close()
+        ExportCharacter(charSheet, charName, charGender, tradWoman, charAge, homeland, culture, charReligion,
+                        charSonNumber, charLeige, charClass, charManor, charTraits, charDirectedTraits, charPassions)
+
+        charSheet.Save(here & "\Sir " & charName & ".xml")
     End Sub
 
     Sub MiscLifeDetails(here As String, ByRef inList As ArrayList, Optional male As Boolean = True)

@@ -68,9 +68,9 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FamilyNow.vb" />
     <Compile Include="MainModule.vb" />
     <Compile Include="FamilyHistory.vb" />
-    <Compile Include="FamilyNow.vb" />
     <Compile Include="ExportModule.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
