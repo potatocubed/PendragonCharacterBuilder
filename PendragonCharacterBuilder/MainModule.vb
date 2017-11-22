@@ -537,8 +537,8 @@
 
         For i = 1 To x
             x2 = DiceRoller(1, fArray.Count)
-            charFeatures = charFeatures & (fArray(x2))
-            fArray.RemoveAt(x2)
+            charFeatures = charFeatures & (fArray(x2 - 1))
+            fArray.RemoveAt(x2 - 1)
             If i = x Then
                 charFeatures = charFeatures & "."
             ElseIf i = (x - 1) Then
@@ -812,13 +812,22 @@
         MiscLifeDetails(here, mUncles, True)
         MiscLifeDetails(here, mAunts, False)
 
+        'Commence the export stuff.
+        Dim sw As IO.StreamWriter
+        sw = My.Computer.FileSystem.OpenTextFileWriter(here & "\Sir " & charName & ".xml", True)
+        sw.WriteLine($"<pdcc_character>")
+        sw.WriteLine($"<character>")
+        sw.WriteLine($"<name>{charName}</name>")
+        sw.WriteLine($"</character>")
+        sw.WriteLine($"</pdcc_character>")
+        sw.Close()
     End Sub
 
     Sub MiscLifeDetails(here As String, ByRef inList As ArrayList, Optional male As Boolean = True)
         If inList.Count = 0 Then Exit Sub
 
         For i = 0 To inList.Count - 1
-            inList(i) = $"{inList(i)} " & AliveAndMarried()
+            inList(i) = $"{inList(i)}. " & AliveAndMarried()
             If InStr(inList(i), "Dead ") Then inList(i) = inList(i) & " " & MiscDeath(here, male)
         Next
 
@@ -996,7 +1005,8 @@
         Static Generator As System.Random = New System.Random()
 
         For i = 1 To quantity
-            DiceRoller = DiceRoller + Generator.Next(1, sides)
+            DiceRoller = DiceRoller + Generator.Next(1, sides + 1)
+            Generator.Next()
         Next i
     End Function
 End Module

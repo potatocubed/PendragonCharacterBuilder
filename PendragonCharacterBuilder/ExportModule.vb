@@ -1,4 +1,4 @@
-﻿Module ExportModule
+﻿Public Module ExportModule
     Sub ExportCharacter()
 
     End Sub
