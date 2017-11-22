@@ -87,4 +87,44 @@
 
         HeirloomGenerator = s
     End Function
+
+    Function MiscDeath(here As String, Optional male As Boolean = True) As String
+        Dim s As String
+        Dim x As Integer
+        Dim deathXML As New Xml.XmlDocument
+        Dim dElem As Xml.XmlElement
+        Dim dNode As Xml.XmlNode
+        Dim gender As String = "male"
+        If Not male Then gender = "female"
+
+        deathXML.Load(here & "\xml\pdcc_ways_to_die.xml")
+
+        x = DiceRoller(1, 20)
+
+        dElem = deathXML.SelectSingleNode($"//{gender}/death[@dice_min <= {x} and @dice_max >= {x}]")
+        dNode = dElem.SelectSingleNode("./text()")
+
+        s = dNode.Value
+
+        MiscDeath = s
+    End Function
+
+    Function SpecialGiftGenerator(here As String, gender As String) As String
+        Dim s As String
+        Dim x As Integer
+        Dim deathXML As New Xml.XmlDocument
+        Dim dElem As Xml.XmlElement
+        Dim dNode As Xml.XmlNode
+
+        deathXML.Load(here & "\xml\pdcc_special_gifts.xml")
+
+        x = DiceRoller(1, 20)
+
+        dElem = deathXML.SelectSingleNode($"//{gender}/gift[@dice_min <= {x} and @dice_max >= {x}]")
+        dNode = dElem.SelectSingleNode("./text()")
+
+        s = dNode.Value
+
+        SpecialGiftGenerator = s
+    End Function
 End Module

@@ -1,0 +1,19 @@
+<pdcc_ways_to_die>
+	<male>
+		<death dice_min="1" dice_max="2">He died in battle, pursuing a personal feud.</death>
+		<death dice_min="3" dice_max="5">He died in battle, in a neighbouring kingdom.</death>
+		<death dice_min="6" dice_max="7">He died in battle, defending against foreign invaders.</death>
+		<death dice_min="8" dice_max="9">He died in a hunting accident.</death>
+		<death dice_min="10" dice_max="11">He died in a tragic accident.</death>
+		<death dice_min="12" dice_max="16">He died of natural causes.</death>
+		<death dice_min="17" dice_max="20">He disappeared in unknown and mysterious circumstances, and is presumed dead.</death>
+	</male>
+	<female>
+		<death dice_min="1" dice_max="1">She was killed by raiders.</death>
+		<death dice_min="2" dice_max="2">She was kidnapped by raiders and died in captivity.</death>
+		<death dice_min="3" dice_max="5">She died in a tragic accident.</death>
+		<death dice_min="6" dice_max="11">She died of pregnancy-related complications.</death>
+		<death dice_min="12" dice_max="18">She died of natural causes.</death>
+		<death dice_min="19" dice_max="20">She disappeared in unknown and mysterious circumstances, and is presumed dead.</death>
+	</female>
+</pdcc_ways_to_die>

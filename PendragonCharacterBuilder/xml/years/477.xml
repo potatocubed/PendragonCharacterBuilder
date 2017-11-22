@@ -1,5 +1,5 @@
 <!-- <text glory="10" battle="" passion="1" dies="false" flag="for special events"> -->
-<year n="474-476">
+<year n="477">
 	<events>
 		<text>{fatherName}</text>
 		<event dice_min="1" dice_max="1">

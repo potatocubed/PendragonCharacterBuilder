@@ -1,0 +1,28 @@
+<pdcc_special_gifts>
+	<male>
+		<gift dice_min="1" dice_max="2">good with horses (+5 Horsemanship)</gift>
+		<gift dice_min="3" dice_max="3">excellent singers (+10 Singing)</gift>
+		<gift dice_min="4" dice_max="7">possessed of keen senses (+5 Awareness)</gift>
+		<gift dice_min="8" dice_max="8">gifted at naturecraft (+5 Hunting)</gift>
+		<gift dice_min="9" dice_max="9">light-footed (+10 Dancing)</gift>
+		<gift dice_min="10" dice_max="10">natural healers (+5 First Aid)</gift>
+		<gift dice_min="11" dice_max="11">naturally lovable (+10 Flirting)</gift>
+		<gift dice_min="12" dice_max="12">good with faces (+10 Recognise)</gift>
+		<gift dice_min="13" dice_max="13">remarkably deductive (+5 Intrigue)</gift>
+		<gift dice_min="14" dice_max="14">like otters (+10 Swimming)</gift>
+		<gift dice_min="15" dice_max="15">natural speakers (+10 Orate)</gift>
+		<gift dice_min="16" dice_max="16">natural musicians (+15 Play (Harp))</gift>
+		<gift dice_min="17" dice_max="17">good with words (+15 Compose)</gift>
+		<gift dice_min="18" dice_max="18">handy with heraldry (+10 Heraldry)</gift>
+		<gift dice_min="19" dice_max="19">good with birds (+15 Falconry)</gift>
+		<gift dice_min="20" dice_max="20">clever gamblers (+10 Gaming)</gift>
+	</male>
+	<female>
+		<gift dice_min="1" dice_max="5">beautiful (+10 APP)</gift>
+		<gift dice_min="6" dice_max="10">natural healers (+5 First Aid and +5 Chirurgery)</gift>
+		<gift dice_min="11" dice_max="15">good with animals (+5 Falconry and +5 Horsemanship)</gift>
+		<gift dice_min="16" dice_max="17">excellent speakers (+5 Orate and +5 Singing)</gift>
+		<gift dice_min="18" dice_max="18">nimble-fingered (+10 Industry)</gift>
+		<gift dice_min="19" dice_max="20">diligent caretakers (+10 Stewardship)</gift>
+	</female>
+</pdcc_special_gifts>

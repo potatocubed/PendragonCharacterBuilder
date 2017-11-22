@@ -20,8 +20,12 @@
         Dim charManor As String = RandomHome()
         Dim charTraits As String(,)
         charTraits = InitialiseCharTraits()
-        Dim charPassions As String(,)
-        charPassions = InitialiseCharPassions()
+        Dim charPassions As New ArrayList
+        charPassions.Add("Loyalty (Lord)/15")
+        charPassions.Add("Love (Family)/15")
+        charPassions.Add("Hospitality/15")
+        charPassions.Add("Honour/15")
+        Dim charDirectedTraits As New ArrayList
         Dim charSIZ As Integer
         Dim charDEX As Integer
         Dim charSTR As Integer
@@ -35,6 +39,16 @@
         Dim charFeatures As String
         Dim charSkills As String(,)
         Dim charGlory As Integer
+        Dim fatherGlory As Integer
+        Dim grandfatherGlory As Integer
+        Dim pUncles As New ArrayList()
+        Dim pAunts As New ArrayList()
+        Dim brothers As New ArrayList()
+        Dim sisters As New ArrayList()
+        Dim mUncles As New ArrayList()
+        Dim mAunts As New ArrayList()
+        Dim cousins As New ArrayList()
+        Dim familyHistory As String
         Dim charHorses As New ArrayList()
         charHorses.Add("Charger")
         charHorses.Add("Rouncy")
@@ -57,6 +71,8 @@
             grandfatherName = RandomName()
         End While
 
+        Dim motherName As String = RandomName("female")
+
         Dim fatherClass As String = "vassal knight"
 
         Dim xhim As String
@@ -66,12 +82,14 @@
 
         Dim x As Integer
         Dim x2 As Integer
+        Dim x3 As Integer
         Dim spr As Integer
         Dim aspr As Integer
         Dim attMin As Integer
         Dim attMax As Integer
         Dim s As String
         Dim s2 As String
+        Dim b As Boolean
 
         Dim here As String = My.Computer.FileSystem.CurrentDirectory
         'DEBUG
@@ -454,7 +472,7 @@
             Console.Write("women")
         End If
         Console.Write(" of your line are all ")
-        s = SpecialGiftGenerator(charGender)
+        s = SpecialGiftGenerator(here, charGender)
         charFamilyCharacteristic = s
         Console.Write(s & ".")
 
@@ -548,20 +566,20 @@
 
         x = DiceRoller(1, 6) - 2
         If x > 0 Then
-            For i = 1 To x
-                charMAKnights(0, 0) = RandomName()
-                charMAKnights(0, 1) = "alive"
-                charMAKnights(0, 2) = ""
+            For i = 0 To x - 1
+                charMAKnights(i, 0) = RandomName()
+                charMAKnights(i, 1) = "alive"
+                charMAKnights(i, 2) = ""
             Next
             s = s & x & " middle-aged, "
             x2 = x2 + x
         End If
 
         x = DiceRoller(1, 6)
-        For i = 1 To x
-            charYoungKnights(0, 0) = RandomName()
-            charMAKnights(0, 1) = "alive"
-            charMAKnights(0, 2) = ""
+        For i = 0 To x - 1
+            charYoungKnights(i, 0) = RandomName()
+            charMAKnights(i, 1) = "alive"
+            charMAKnights(i, 2) = ""
         Next
         If x2 > 0 Then
             s = s & "and " & x & " young)"
@@ -591,10 +609,109 @@
         Console.WriteLine()
         Console.WriteLine(charName & "'s family history will now be generated and appended to their character sheet.")
 
-        s = Nothing
-        Do
-            s = Console.ReadLine()
-        Loop While s Is Nothing
+        familyHistory = FamilyHistoryMaker(here, charName, fatherName, motherName, grandfatherName, charYearBorn)
+        'number of extra heirlooms
+        'Optional list of passions and directed traits.
+        'Glories.
+        'Line starting '439: ...' is the start of the actual history.
+
+        Dim sr As New IO.StringReader(familyHistory)
+        b = False
+        s = sr.ReadLine
+        Try
+            x = CInt(s)
+            For i = 1 To x
+                If LCase(charReligion) = "pagan" Then b = True
+                s = HeirloomGenerator(hList, b, True)
+                If InStr(s, "charger") Then charHorses.Add("Charger")
+                If InStr(s, "courser") Then charHorses.Add("Courser")
+                x2 = InStr(s, "rouncy")
+                If x2 > 0 Then
+                    charHorses.Add("Rouncy")
+                    If InStr(x2 + 1, s, "rouncy") Then charHorses.Add("Rouncy")
+                End If
+                x = InStr(s, "//")
+                If x > 0 Then
+                    charHeirlooms.Add(Left(s, x - 1))
+                    charHeirlooms.Add(Mid(s, x + 2))
+                Else
+                    charHeirlooms.Add(s)
+                End If
+            Next
+        Catch ex As Exception
+            x = 0
+        End Try
+        s = sr.ReadLine()
+        Do While InStr(Left(s, 10), "Glory") < 1
+            If Left(s, 2) = "PA" Then
+                charPassions.Add(Mid(s, 4))
+            ElseIf Left(s, 2) = "DT" Then
+                charDirectedTraits.Add(Mid(s, 4))
+            End If
+            s = sr.ReadLine
+        Loop
+        Do While Left(s, 3) <> "439"
+            x = InStr(s, "/")
+            s2 = Mid(s, x + 1)
+            s = Left(s, x - 1)
+            x = CInt(s2)
+
+            Select Case s
+                Case "cGlory"
+                    charGlory = x
+                Case "fGlory"
+                    fatherGlory = x
+                Case "gfGlory"
+                    grandfatherGlory = x
+            End Select
+
+            s = sr.ReadLine
+        Loop
+        familyHistory = s & vbNewLine & sr.ReadToEnd
+        sr.Dispose()
+
+        charOldKnights = OldKnightGenerator(charOldKnights, grandfatherName)
+        charMAKnights = MAKnightGenerator(charMAKnights, fatherName, motherName)
+        charYoungKnights = YoungKnightGenerator(charYoungKnights, charAge)
+
+        'Generating your family tree is OBNOXIOUS.
+        'First, we determine if your mother remarried.
+        Dim motherStatus As String
+        motherStatus = AliveAndMarried(False, True)
+        If InStr(motherStatus, "Dead ") > 0 Then
+            motherStatus = "Deceased."
+        ElseIf InStr(motherStatus, " married") > 0 Then
+            motherStatus = Replace(motherStatus, " married", " married to " & RandomName("male"))
+        End If
+
+        'Now, we find out how many brothers and sisters you have. (Including pre-existing ones.)
+        x2 = 0
+        For i = 0 To 5
+            If charYoungKnights(i, 0) = "" Then Exit For
+            If InStr(charYoungKnights(i, 2), "brother") > 0 Then x2 += 1
+        Next
+
+        x3 = 0
+        x = DiceRoller(1, 6)
+        For i = 1 To x
+            x = DiceRoller(1, 2)
+            If x = 1 Then
+                x3 += 1
+            Else
+                sisters.Add(RandomName("female"))
+            End If
+        Next
+
+        x3 = x3 - x2
+        If x3 > 0 Then
+            For i = 1 To x3
+                brothers.Add(RandomName)
+            Next
+        End If
+
+        x2 = 0
+        x3 = 0
+        'Now for your parents' siblings.
 
     End Sub
 
@@ -641,102 +758,6 @@
             End If
         Next
         SkillUpdater = sArray
-    End Function
-
-    Function SpecialGiftGenerator(gender As String) As String
-        Dim s As String = ""
-        Dim x As Integer
-
-        x = DiceRoller(1, 20)
-        If gender = "male" Then
-            Select Case x
-                Case 1
-                    s = "good with horses (+5 Horsemanship)"
-                Case 2
-                    s = "good with horses (+5 Horsemanship)"
-                Case 3
-                    s = "excellent singers (+10 Singing)"
-                Case 4
-                    s = "possessed of keen senses (+5 Awareness)"
-                Case 5
-                    s = "possessed of keen senses (+5 Awareness)"
-                Case 6
-                    s = "possessed of keen senses (+5 Awareness)"
-                Case 7
-                    s = "possessed of keen senses (+5 Awareness)"
-                Case 8
-                    s = "gifted at naturecraft (+5 Hunting)"
-                Case 9
-                    s = "light-footed (+10 Dancing)"
-                Case 10
-                    s = "natural healers (+5 First Aid)"
-                Case 11
-                    s = "naturally lovable (+10 Flirting)"
-                Case 12
-                    s = "good with faces (+10 Recognise)"
-                Case 13
-                    s = "remarkably deductive (+5 Intrigue)"
-                Case 14
-                    s = "like otters (+10 Swimming)"
-                Case 15
-                    s = "natural speakers (+10 Orate)"
-                Case 16
-                    s = "natural musicians (+15 Play (Harp))"
-                Case 17
-                    s = "good with words (+15 Compose)"
-                Case 18
-                    s = "handy with heraldry (+10 Heraldry)"
-                Case 19
-                    s = "good with birds (+15 Falconry)"
-                Case 20
-                    s = "clever gamblers (+10 Gaming)"
-            End Select
-        Else
-            Select Case x
-                Case 1
-                    s = "beautiful (+10 APP)"
-                Case 2
-                    s = "beautiful (+10 APP)"
-                Case 3
-                    s = "beautiful (+10 APP)"
-                Case 4
-                    s = "beautiful (+10 APP)"
-                Case 5
-                    s = "beautiful (+10 APP)"
-                Case 6
-                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
-                Case 7
-                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
-                Case 8
-                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
-                Case 9
-                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
-                Case 10
-                    s = "natural healers (+5 First Aid and +5 Chirurgery)"
-                Case 11
-                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
-                Case 12
-                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
-                Case 13
-                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
-                Case 14
-                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
-                Case 15
-                    s = "good with animals (+5 Falconry and +5 Horsemanship)"
-                Case 16
-                    s = "excellent speakers (+5 Orate and +5 Singing)"
-                Case 17
-                    s = "excellent speakers (+5 Orate and +5 Singing)"
-                Case 18
-                    s = "nimble-fingered (+10 Industry)"
-                Case 19
-                    s = "diligent caretakers (+10 Stewardship)"
-                Case 20
-                    s = "diligent caretakers (+10 Stewardship)"
-            End Select
-        End If
-
-        SpecialGiftGenerator = s
     End Function
 
     Function InitialiseCharSkills(f As String, Optional gender As String = "male") As String(,)
