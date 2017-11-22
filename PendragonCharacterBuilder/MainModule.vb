@@ -813,14 +813,19 @@
         MiscLifeDetails(here, mAunts, False)
 
         'Commence the export stuff.
-        Dim sw As IO.StreamWriter
-        sw = My.Computer.FileSystem.OpenTextFileWriter(here & "\Sir " & charName & ".xml", True)
-        sw.WriteLine($"<pdcc_character>")
-        sw.WriteLine($"<character>")
-        sw.WriteLine($"<name>{charName}</name>")
-        sw.WriteLine($"</character>")
-        sw.WriteLine($"</pdcc_character>")
-        sw.Close()
+        Dim charSheet As New Xml.XmlDocument
+
+        charSheet.CreateElement("pdcc_character")
+        charSheet.CreateElement("pdcc_character/character")
+
+        'Dim sw As IO.StreamWriter
+        'sw = My.Computer.FileSystem.OpenTextFileWriter(here & "\Sir " & charName & ".xml", True)
+        'sw.WriteLine($"<pdcc_character>")
+        'sw.WriteLine($"<character>")
+        'sw.WriteLine($"<name>{charName}</name>")
+        'sw.WriteLine($"</character>")
+        'sw.WriteLine($"</pdcc_character>")
+        'sw.Close()
     End Sub
 
     Sub MiscLifeDetails(here As String, ByRef inList As ArrayList, Optional male As Boolean = True)
