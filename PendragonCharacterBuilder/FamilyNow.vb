@@ -55,28 +55,36 @@
                     x = DiceRoller(1, 4)
                     If x = 1 Then
                         s = "Your sister's husband. " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to RANDOMSISTER")
                     ElseIf x <= 3 Then
                         s = "Your first cousin (maternal). " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to " & RandomName("female"))
                     Else
                         s = "An illegitimate older brother. " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to " & RandomName("female"))
                     End If
                 Else
                     x = DiceRoller(1, 20)
                     If x <= 8 Then
                         s = "Your younger brother. " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to " & RandomName("female"))
                     ElseIf x <= 14 Then
                         s = "Your first cousin (paternal). " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to " & RandomName("female"))
                     ElseIf x <= 15 Then
                         s = "Your sister's husband. " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to RANDOMSISTER")
                     ElseIf x <= 17 Then
                         s = "Your first cousin (maternal). " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to " & RandomName("female"))
                     ElseIf x <= 18 Then
                         s = "An illegitimate older brother. " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to " & RandomName("female"))
                     Else
                         s = "An illegitimate younger brother. " & AliveAndMarried(True)
+                        s = Replace(s, " married", " married to " & RandomName("female"))
                     End If
                 End If
-                s = Replace(s, " married", " married to " & RandomName("female"))
                 youngKnights(i, 2) = s
             Next
         End If

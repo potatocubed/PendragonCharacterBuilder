@@ -650,7 +650,7 @@
             End If
             s = sr.ReadLine
         Loop
-        Do While Left(s, 3) <> "439" And Left(s, 3 <> "440")
+        Do While Left(s, 3) <> "439" And Left(s, 3) <> "440"
             x = InStr(s, "/")
             s2 = Mid(s, x + 1)
             s = Left(s, x - 1)
@@ -721,6 +721,14 @@
                 sisters.Add(RandomName("female"))
             Next
         End If
+
+        For i = 0 To 5
+            If charYoungKnights(i, 0) = "" Then Exit For
+            If InStr(charYoungKnights(i, 2), "RANDOMSISTER") > 0 Then
+                x = DiceRoller(1, sisters.Count)
+                charYoungKnights(i, 2) = Replace(charYoungKnights(i, 2), "RANDOMSISTER", sisters(x - 1))
+            End If
+        Next
 
         x2 = 0
         x3 = 0
