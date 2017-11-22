@@ -710,8 +710,109 @@
         End If
 
         x2 = 0
+        For i = 0 To 5
+            If charYoungKnights(i, 0) = "" Then Exit For
+            If InStr(charYoungKnights(i, 2), "sister") > 0 Then x2 += 1
+        Next
+
+        x2 = x2 - sisters.Count
+        If x2 > 0 Then
+            For i = 1 To x2
+                sisters.Add(RandomName("female"))
+            Next
+        End If
+
+        x2 = 0
         x3 = 0
-        'Now for your parents' siblings.
+        'Now for your father's siblings.
+        For i = 0 To 3
+            If charMAKnights(i, 0) = "" Then Exit For
+            If InStr(charMAKnights(i, 2), $"{fatherName}") > 0 Then x2 += 1
+        Next
+
+        x3 = 0
+        x = DiceRoller(1, 6)
+        For i = 1 To x
+            x = DiceRoller(1, 2)
+            If x = 1 Then
+                x3 += 1
+            Else
+                pAunts.Add(RandomName("female"))
+            End If
+        Next
+
+        x3 = x3 - x2
+        If x3 > 0 Then
+            For i = 1 To x3
+                pUncles.Add(RandomName)
+            Next
+        End If
+
+        x2 = 0
+        x3 = 0
+        'And your mother's.
+        For i = 0 To 3
+            If charMAKnights(i, 0) = "" Then Exit For
+            If InStr(charMAKnights(i, 2), $"{motherName}") > 0 Then x2 += 1
+        Next
+
+        x3 = 0
+        x = DiceRoller(1, 6)
+        For i = 1 To x
+            x = DiceRoller(1, 2)
+            If x = 1 Then
+                x3 += 1
+            Else
+                mAunts.Add(RandomName("female"))
+            End If
+        Next
+
+        x3 = x3 - x2
+        If x3 > 0 Then
+            For i = 1 To x3
+                mUncles.Add(RandomName)
+            Next
+        End If
+
+        'And now your pre-existing cousins.
+        Dim al1 As New ArrayList
+        al1.AddRange(pUncles)
+        al1.AddRange(pAunts)
+
+        Dim al2 As New ArrayList
+        al2.AddRange(mUncles)
+        al2.AddRange(mAunts)
+        x2 = 0
+        For i = 0 To 5
+            Dim cName As String
+            Dim cNotes As String
+            cName = charYoungKnights(i, 0)
+            If cName = "" Then Exit For
+            cNotes = charYoungKnights(i, 2)
+            If InStr(cNotes, "cousin (paternal)") > 0 Then
+                x = DiceRoller(1, al1.Count)
+                charYoungKnights(i, 2) += $" Son of {al1(x - 1)}."
+            End If
+            If InStr(cNotes, "cousin (maternal)") > 0 Then
+                x = DiceRoller(1, al2.Count)
+                charYoungKnights(i, 2) += $" Son of {al2(x - 1)}."
+            End If
+        Next
+
+        MiscLifeDetails(here, pUncles, True)
+        MiscLifeDetails(here, pAunts, False)
+        MiscLifeDetails(here, mUncles, True)
+        MiscLifeDetails(here, mAunts, False)
+
+    End Sub
+
+    Sub MiscLifeDetails(here As String, ByRef inList As ArrayList, Optional male As Boolean = True)
+        If inList.Count = 0 Then Exit Sub
+
+        For i = 0 To inList.Count - 1
+            inList(i) = $"{inList(i)} " & AliveAndMarried()
+            If InStr(inList(i), "Dead ") Then inList(i) = inList(i) & " " & MiscDeath(here, male)
+        Next
 
     End Sub
 

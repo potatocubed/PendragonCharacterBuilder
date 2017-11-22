@@ -71,6 +71,7 @@
     <Compile Include="MainModule.vb" />
     <Compile Include="FamilyHistory.vb" />
     <Compile Include="FamilyNow.vb" />
+    <Compile Include="ExportModule.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
