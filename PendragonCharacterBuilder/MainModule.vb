@@ -31,11 +31,6 @@
         Dim charSTR As Integer
         Dim charCON As Integer
         Dim charAPP As Integer
-        Dim charDamage As String
-        Dim charHealing As Integer
-        Dim charMove As Integer
-        Dim charHP As Integer
-        Dim charUnconscious As Integer
         Dim charFeatures As String
         Dim charSkills As String(,)
         Dim charGlory As Integer
@@ -319,12 +314,6 @@
             Loop While x = Nothing
         Next i
 
-        charDamage = CStr(Math.Round((charSTR + charSIZ) / 6, 0)) & "d6"
-        charHealing = Math.Round((charCON + charSTR) / 10)
-        charMove = Math.Round((charSTR + charDEX) / 10)
-        charHP = charCON + charSIZ
-        charUnconscious = Math.Round(charHP / 4)
-
         Console.WriteLine()
         Console.WriteLine("Choose a knightly skill to be awesome at:")
         If tradWoman Then Console.WriteLine("(Yes, even as a traditional woman. The rules are a little odd here.)")
@@ -337,7 +326,7 @@
             If Not skArray.Contains(s) Then
                 s = Nothing
             Else
-                For i = 0 To 31
+                For i = 0 To 39
                     If charSkills(0, i) = s Then charSkills(1, i) = 15
                 Next i
             End If
@@ -354,11 +343,12 @@
         x = skArray.IndexOf("Religion (xx)")
         skArray(x) = charSkills(0, 21)
 
+        'Clear out the skills at 10+
         For i = 0 To 39
-            'Skills which are at 10+ don't get improved at this step.
-            s = charSkills(0, i)
-            x = charSkills(1, i)
-            If x >= 10 Then skArray.Remove(s)
+            If charSkills(1, i) >= 10 Then
+                s = charSkills(0, i)
+                skArray.Remove(s)
+            End If
         Next
 
         Console.WriteLine()
@@ -786,10 +776,16 @@
         Dim al1 As New ArrayList
         al1.AddRange(pUncles)
         al1.AddRange(pAunts)
-
         Dim al2 As New ArrayList
         al2.AddRange(mUncles)
         al2.AddRange(mAunts)
+
+        For i = 0 To 3
+            If charMAKnights(i, 0) = "" Then Exit For
+            If InStr(charMAKnights(i, 2), $"{motherName}") > 0 Then al2.Add(charMAKnights(i, 0))
+            If InStr(charMAKnights(i, 2), $"{fatherName}") > 0 Then al1.Add(charMAKnights(i, 0))
+        Next
+
         x2 = 0
         For i = 0 To 5
             Dim cName As String
@@ -829,7 +825,8 @@
         cNode.AppendChild(cNode2)
 
         ExportCharacter(charSheet, charName, charGender, tradWoman, charAge, homeland, culture, charReligion,
-                        charSonNumber, charLeige, charClass, charManor, charTraits, charDirectedTraits, charPassions)
+                        charSonNumber, charLeige, charClass, charManor, charTraits, charDirectedTraits, charPassions,
+                        charSIZ, charDEX, charSTR, charCON, charAPP, charFeatures, charSkills, charGlory)
 
         charSheet.Save(here & "\Sir " & charName & ".xml")
     End Sub
@@ -875,7 +872,7 @@
         x = CInt(s2) 'x is now the bonus
         s = Trim(Mid(s, x2))    's is now the skill
 
-        For i = 0 To 31
+        For i = 0 To 39
             If sArray(0, i) = s Then
                 x2 = CInt(sArray(1, i))
                 x2 = x2 + x
@@ -906,7 +903,7 @@
             xp = $"//skill[@name='{sName}']/start_value"
             skNode = skXML.SelectSingleNode(xp)
             x = skNode.GetAttribute(gender)
-            a(0, 1) = x
+            a(1, i) = x
         Next
 
         InitialiseCharSkills = a

@@ -2,7 +2,9 @@
     Sub ExportCharacter(ByRef charSheet As Xml.XmlDocument, name As String, gender As String, tradWoman As Boolean,
                         charAge As Integer, homeland As String, culture As String, charReligion As String,
                         charSonNumber As Integer, charLeige As String, charClass As String, charManor As String,
-                        charTraits As String(,), charDirectedTraits As ArrayList, charPassions As ArrayList)
+                        charTraits As String(,), charDirectedTraits As ArrayList, charPassions As ArrayList,
+                        siz As Integer, dex As Integer, str As Integer, con As Integer, app As Integer,
+                        features As String, skills As String(,), glory As Integer)
         Dim cElem As Xml.XmlElement
         Dim cNode As Xml.XmlNode
         Dim cNode2 As Xml.XmlNode
@@ -21,6 +23,10 @@
 
         cNode = charSheet.CreateElement("name")
         cNode.AppendChild(charSheet.CreateTextNode(name))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("glory")
+        cNode.AppendChild(charSheet.CreateTextNode(glory))
         cElem.AppendChild(cNode)
 
         cNode = charSheet.CreateElement("age")
@@ -71,27 +77,27 @@
 
             cNode = charSheet.CreateElement("trait")
             cAtt = charSheet.CreateAttribute("name")
-            cAtt.Value = charTraits(i, 0)
+            cAtt.Value = charTraits(0, i)
             cNode.Attributes.Append(cAtt)
             cAtt = charSheet.CreateAttribute("value")
-            cAtt.Value = charTraits(i, 1)
+            cAtt.Value = charTraits(1, i)
             cNode.Attributes.Append(cAtt)
             cNode2.AppendChild(cNode)
 
             cNode3 = charSheet.CreateElement("trait")
             cAtt = charSheet.CreateAttribute("name")
-            cAtt.Value = charTraits(i + 13, 0)
+            cAtt.Value = charTraits(0, i + 13)
             cNode3.Attributes.Append(cAtt)
             cAtt = charSheet.CreateAttribute("value")
-            cAtt.Value = charTraits(i + 13, 1)
+            cAtt.Value = charTraits(1, i + 13)
             cNode3.Attributes.Append(cAtt)
             cNode2.AppendChild(cNode3)
         Next
 
         If charDirectedTraits.Count > 0 Then
-            For i = 0 To charDirectedTraits.Count - 1
+            For Each trait In charDirectedTraits
                 cNode = charSheet.CreateElement("directed-trait")
-                s = charDirectedTraits(i)
+                s = trait
                 x = InStr(s, "/")
                 s2 = Mid(s, x + 1)
                 s = Left(s, x - 1)
@@ -103,6 +109,153 @@
                 cNode.Attributes.Append(cAtt)
             Next
         End If
+
+        'Passions
+        cElem = charSheet.SelectSingleNode("//character")
+        cNode = charSheet.CreateElement("passions")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("passions")
+
+        If charPassions.Count > 0 Then
+            For Each passion In charPassions
+                cNode = charSheet.CreateElement("passion")
+                s = passion
+                x = InStr(s, "/")
+                s2 = Mid(s, x + 1)
+                s = Left(s, x - 1)
+                cAtt = charSheet.CreateAttribute("name")
+                cAtt.Value = s
+                cNode.Attributes.Append(cAtt)
+                cAtt = charSheet.CreateAttribute("value")
+                cAtt.Value = s2
+                cNode.Attributes.Append(cAtt)
+                cElem.AppendChild(cNode)
+            Next
+        End If
+
+        'Attributes
+        cElem = charSheet.SelectSingleNode("//character")
+        cNode = charSheet.CreateElement("attributes")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("attributes")
+
+        cNode = charSheet.CreateElement("base-attributes")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("base-attributes")
+
+        cNode = charSheet.CreateElement("size")
+        cAtt = charSheet.CreateAttribute("short")
+        cAtt.Value = "SIZ"
+        cNode.Attributes.Append(cAtt)
+        cNode.AppendChild(charSheet.CreateTextNode(siz))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("dexterity")
+        cAtt = charSheet.CreateAttribute("short")
+        cAtt.Value = "DEX"
+        cNode.Attributes.Append(cAtt)
+        cNode.AppendChild(charSheet.CreateTextNode(dex))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("strength")
+        cAtt = charSheet.CreateAttribute("short")
+        cAtt.Value = "STR"
+        cNode.Attributes.Append(cAtt)
+        cNode.AppendChild(charSheet.CreateTextNode(str))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("constitution")
+        cAtt = charSheet.CreateAttribute("short")
+        cAtt.Value = "CON"
+        cNode.Attributes.Append(cAtt)
+        cNode.AppendChild(charSheet.CreateTextNode(con))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("appearance")
+        cAtt = charSheet.CreateAttribute("short")
+        cAtt.Value = "APP"
+        cNode.Attributes.Append(cAtt)
+        cNode.AppendChild(charSheet.CreateTextNode(app))
+        cElem.AppendChild(cNode)
+
+        cElem = charSheet.SelectSingleNode("//character/attributes")
+        cNode = charSheet.CreateElement("derived-attributes")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("derived-attributes")
+
+        Dim charDamage As String = CStr(Math.Round((str + siz) / 6)) & "d6"
+        Dim charHealing As Integer = Math.Round((con + str) / 10)
+        Dim charMove As Integer = Math.Round((str + dex) / 10)
+        Dim charHP As Integer = con + siz
+        Dim charUnconscious As Integer = Math.Round(charHP / 4)
+
+        cNode = charSheet.CreateElement("damage")
+        cNode.AppendChild(charSheet.CreateTextNode(charDamage))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("healing")
+        cNode.AppendChild(charSheet.CreateTextNode(charHealing))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("move")
+        cNode.AppendChild(charSheet.CreateTextNode(charMove))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("HP")
+        cNode.AppendChild(charSheet.CreateTextNode(charHP))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("unconscious")
+        cNode.AppendChild(charSheet.CreateTextNode(charUnconscious))
+        cElem.AppendChild(cNode)
+
+        'Feature(s)
+        cElem = charSheet.SelectSingleNode("//character")
+        cNode = charSheet.CreateElement("features")
+        cNode.AppendChild(charSheet.CreateTextNode(features))
+        cElem.AppendChild(cNode)
+
+        'Skills
+        cElem = charSheet.SelectSingleNode("//character")
+        cNode = charSheet.CreateElement("skills")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("skills")
+        cNode = charSheet.CreateElement("non-combat")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("non-combat")
+
+        For i = 0 To 33
+            cNode = charSheet.CreateElement("skill")
+            s = skills(0, i)
+            s2 = skills(1, i)
+            cAtt = charSheet.CreateAttribute("name")
+            cAtt.Value = s
+            cNode.Attributes.Append(cAtt)
+            cAtt = charSheet.CreateAttribute("value")
+            cAtt.Value = s2
+            cNode.Attributes.Append(cAtt)
+            cElem.AppendChild(cNode)
+        Next
+
+        cElem = charSheet.SelectSingleNode("//character/skills")
+        cNode = charSheet.CreateElement("combat")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("combat")
+
+        For i = 27 To 39
+            cNode = charSheet.CreateElement("skill")
+            s = skills(0, i)
+            s2 = skills(1, i)
+            cAtt = charSheet.CreateAttribute("name")
+            cAtt.Value = s
+            cNode.Attributes.Append(cAtt)
+            cAtt = charSheet.CreateAttribute("value")
+            cAtt.Value = s2
+            cNode.Attributes.Append(cAtt)
+            cElem.AppendChild(cNode)
+        Next
+
+        'TODO: Squire and Horses
     End Sub
 
     Sub ExportHistory(sheet As Xml.XmlDocument)
