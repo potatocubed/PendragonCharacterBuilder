@@ -826,7 +826,8 @@
 
         ExportCharacter(charSheet, charName, charGender, tradWoman, charAge, homeland, culture, charReligion,
                         charSonNumber, charLeige, charClass, charManor, charTraits, charDirectedTraits, charPassions,
-                        charSIZ, charDEX, charSTR, charCON, charAPP, charFeatures, charSkills, charGlory)
+                        charSIZ, charDEX, charSTR, charCON, charAPP, charFeatures, charSkills, charGlory,
+                        charSquire, charHorses, charHeirlooms)
 
         charSheet.Save(here & "\Sir " & charName & ".xml")
     End Sub

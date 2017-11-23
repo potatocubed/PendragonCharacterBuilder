@@ -4,7 +4,8 @@
                         charSonNumber As Integer, charLeige As String, charClass As String, charManor As String,
                         charTraits As String(,), charDirectedTraits As ArrayList, charPassions As ArrayList,
                         siz As Integer, dex As Integer, str As Integer, con As Integer, app As Integer,
-                        features As String, skills As String(,), glory As Integer)
+                        features As String, skills As String(,), glory As Integer, squire As String(),
+                        horses As ArrayList, heirlooms As ArrayList)
         Dim cElem As Xml.XmlElement
         Dim cNode As Xml.XmlNode
         Dim cNode2 As Xml.XmlNode
@@ -255,14 +256,106 @@
             cElem.AppendChild(cNode)
         Next
 
-        'TODO: Squire and Horses
+        'Stuff
+        cElem = charSheet.SelectSingleNode("//character")
+        cNode = charSheet.CreateElement("stuff")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("stuff")
+
+        Dim stuffArray As New ArrayList
+        If tradWoman Then
+            stuffArray.Add("Sewing kit")
+            stuffArray.Add("Fine clothing (worth £1)")
+            stuffArray.Add("Simple jewellery")
+            stuffArray.Add("Toilet articles")
+            stuffArray.Add("A chest")
+        Else
+            stuffArray.Add("Chainmail")
+            stuffArray.Add("Shield")
+            stuffArray.Add("Spears (2)")
+            stuffArray.Add("Sword")
+            stuffArray.Add("Dagger")
+            stuffArray.Add("Fine clothing (worth £1)")
+            stuffArray.Add("Personal gear")
+            stuffArray.Add("Travel gear")
+            stuffArray.Add("War gear")
+        End If
+
+        For Each h In heirlooms
+            If InStr(h, "charger") > 0 Or InStr(h, "rouncy") > 0 Or InStr(h, "courser") > 0 Then
+                'The horses are taken care of elsewhere.
+                Try
+                    heirlooms.Remove(h)
+                Catch
+                    'Do nothing, just in case this screws up.
+                End Try
+            End If
+        Next
+
+        stuffArray.AddRange(heirlooms)
+
+        For Each item In stuffArray
+            cNode = charSheet.CreateElement("item")
+            cNode.AppendChild(charSheet.CreateTextNode(item))
+            cElem.AppendChild(cNode)
+        Next
+
+        'Squire/Lady in Waiting
+        cElem = charSheet.SelectSingleNode("//character")
+        cNode = charSheet.CreateElement("squire")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("squire")
+
+        cNode = charSheet.CreateElement("name")
+        cNode.AppendChild(charSheet.CreateTextNode(squire(0)))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("age")
+        cNode.AppendChild(charSheet.CreateTextNode(squire(1)))
+        cElem.AppendChild(cNode)
+
+        For i = 2 To 8
+            If squire(i) = "xx" Then Exit For
+            cNode = charSheet.CreateElement("skill")
+            s = squire(i)
+            s2 = squire(i + 1)
+            cAtt = charSheet.CreateAttribute("name")
+            cAtt.Value = s
+            cNode.Attributes.Append(cAtt)
+            cAtt = charSheet.CreateAttribute("value")
+            cAtt.Value = s2
+            cNode.Attributes.Append(cAtt)
+            cElem.AppendChild(cNode)
+        Next
+
+        'And Horses
+        cElem = charSheet.SelectSingleNode("//character")
+        cNode = charSheet.CreateElement("horses")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("horses")
+
+        For Each h In horses
+            cNode = charSheet.CreateElement("horse")
+            cAtt = charSheet.CreateAttribute("type")
+            cAtt.Value = h
+            cNode.Attributes.Append(cAtt)
+            cElem.AppendChild(cNode)
+        Next
     End Sub
 
-    Sub ExportHistory(sheet As Xml.XmlDocument)
+    Sub ExportHistory(ByRef sheet As Xml.XmlDocument)
+        Dim cElem As Xml.XmlElement
+        Dim cNode As Xml.XmlNode
+        Dim cAtt As Xml.XmlAttribute
 
+        Dim s As String
+        Dim s2 As String
+        Dim x As Integer
+
+        cElem = sheet.SelectSingleNode("//history")
     End Sub
 
-    Sub ExportFamily(sheet As Xml.XmlDocument)
+    Sub ExportFamily(ByRef sheet As Xml.XmlDocument)
 
     End Sub
 End Module
