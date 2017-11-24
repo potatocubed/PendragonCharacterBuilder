@@ -281,23 +281,14 @@
             stuffArray.Add("War gear")
         End If
 
-        For Each h In heirlooms
-            If InStr(h, "charger") > 0 Or InStr(h, "rouncy") > 0 Or InStr(h, "courser") > 0 Then
-                'The horses are taken care of elsewhere.
-                Try
-                    heirlooms.Remove(h)
-                Catch
-                    'Do nothing, just in case this screws up.
-                End Try
-            End If
-        Next
-
         stuffArray.AddRange(heirlooms)
 
         For Each item In stuffArray
-            cNode = charSheet.CreateElement("item")
-            cNode.AppendChild(charSheet.CreateTextNode(item))
-            cElem.AppendChild(cNode)
+            If Not (InStr(item, "charger") > 0 Or InStr(item, "rouncy") > 0 Or InStr(item, "courser") > 0) Then
+                cNode = charSheet.CreateElement("item")
+                cNode.AppendChild(charSheet.CreateTextNode(item))
+                cElem.AppendChild(cNode)
+            End If
         Next
 
         'Squire/Lady in Waiting
@@ -343,19 +334,206 @@
         Next
     End Sub
 
-    Sub ExportHistory(ByRef sheet As Xml.XmlDocument)
+    Sub ExportHistory(ByRef sheet As Xml.XmlDocument, history As String)
         Dim cElem As Xml.XmlElement
+        Dim cElem2 As Xml.XmlElement
         Dim cNode As Xml.XmlNode
-        Dim cAtt As Xml.XmlAttribute
+        Dim passages As String()
 
-        Dim s As String
-        Dim s2 As String
-        Dim x As Integer
+        passages = history.Split(vbNewLine & vbNewLine)
 
         cElem = sheet.SelectSingleNode("//history")
+        For Each p In passages
+            p = Replace(p, vbNewLine, "")
+            p = Replace(p, vbLf, "")
+            p = Replace(p, "\n", "")
+            If p <> "" Then
+                cElem2 = sheet.CreateElement("p")
+                cNode = sheet.CreateTextNode(p)
+                cElem2.AppendChild(cNode)
+                cElem.AppendChild(cElem2)
+            End If
+        Next
     End Sub
 
-    Sub ExportFamily(ByRef sheet As Xml.XmlDocument)
+    Sub ExportFamily(ByRef sheet As Xml.XmlDocument, fatherName As String, grandfatherName As String, fatherGlory As Integer, grandfatherGlory As Integer,
+                     motherName As String, motherStatus As String, oldKnights As String(,), maKnights As String(,), youngKnights As String(,), pUncles As ArrayList,
+                     pAunts As ArrayList, mUncles As ArrayList, mAunts As ArrayList, brothers As ArrayList, sisters As ArrayList, cousins As ArrayList)
+
+        Dim cElem As Xml.XmlElement
+        Dim cElem2 As Xml.XmlElement
+        Dim cNode As Xml.XmlNode
+        Dim cAtt As Xml.XmlAttribute
+        Dim s As String
+        Dim x As Integer
+
+        cElem = sheet.SelectSingleNode("//family")
+        cElem2 = sheet.CreateElement("grandfather-generation")
+        cElem.AppendChild(cElem2)
+        cElem = sheet.SelectSingleNode("//family/grandfather-generation")
+        cElem2 = sheet.CreateElement("person")
+        cNode = sheet.CreateTextNode($"{grandfatherName} (your grandfather). Dead with {grandfatherGlory} glory.")
+        cElem2.AppendChild(cNode)
+        cElem.AppendChild(cElem2)
+
+        If oldKnights(0, 0) <> "" Then
+            cElem2 = sheet.CreateElement("person")
+            cNode = sheet.CreateTextNode($"{oldKnights(0, 0)} (old knight). {oldKnights(0, 2)}")
+            cElem2.AppendChild(cNode)
+            cElem.AppendChild(cElem2)
+        End If
+
+        cElem = sheet.SelectSingleNode("//family")
+        cElem2 = sheet.CreateElement("father-generation")
+        cElem.AppendChild(cElem2)
+        cElem = sheet.SelectSingleNode("//family/father-generation")
+
+        cElem2 = sheet.CreateElement("person")
+        cAtt = sheet.CreateAttribute("relation")
+        cAtt.Value = "father"
+        cElem2.Attributes.Append(cAtt)
+        cNode = sheet.CreateTextNode($"{fatherName} (your father). Dead with {fatherGlory} glory.")
+        cElem2.AppendChild(cNode)
+        cElem.AppendChild(cElem2)
+
+        cElem2 = sheet.CreateElement("person")
+        cAtt = sheet.CreateAttribute("relation")
+        cAtt.Value = "mother"
+        cElem2.Attributes.Append(cAtt)
+        cNode = sheet.CreateTextNode($"{motherName} (your mother). {motherStatus}")
+        cElem2.AppendChild(cNode)
+        cElem.AppendChild(cElem2)
+
+        For i = 0 To 3
+            If maKnights(i, 0) <> "" Then
+                cElem2 = sheet.CreateElement("person")
+                cAtt = sheet.CreateAttribute("relation")
+                If InStr(maKnights(i, 2), fatherName) Then
+                    s = "paternal-uncle"
+                Else
+                    s = "maternal-uncle"
+                End If
+                cAtt.Value = s
+                cElem2.Attributes.Append(cAtt)
+                cNode = sheet.CreateTextNode($"{maKnights(i, 0)} (middle-aged knight, {s}). {maKnights(i, 2)}")
+                cElem2.AppendChild(cNode)
+                cElem.AppendChild(cElem2)
+            End If
+        Next
+
+        For Each p In pUncles
+            cElem2 = sheet.CreateElement("person")
+            cAtt = sheet.CreateAttribute("relation")
+            s = "paternal uncle"
+            cAtt.Value = s
+            x = InStr(p, ".")
+            p = p.ToString.Insert(x - 1, $" ({s})")
+            cElem2.Attributes.Append(cAtt)
+            cNode = sheet.CreateTextNode(p)
+            cElem2.AppendChild(cNode)
+            cElem.AppendChild(cElem2)
+        Next
+
+        For Each p In mUncles
+            cElem2 = sheet.CreateElement("person")
+            cAtt = sheet.CreateAttribute("relation")
+            s = "maternal uncle"
+            cAtt.Value = s
+            x = InStr(p, ".")
+            p = p.ToString.Insert(x - 1, $" ({s})")
+            cElem2.Attributes.Append(cAtt)
+            cNode = sheet.CreateTextNode(p)
+            cElem2.AppendChild(cNode)
+            cElem.AppendChild(cElem2)
+        Next
+
+        For Each p In pAunts
+            cElem2 = sheet.CreateElement("person")
+            cAtt = sheet.CreateAttribute("relation")
+            s = "paternal aunt"
+            cAtt.Value = s
+            x = InStr(p, ".")
+            p = p.ToString.Insert(x - 1, $" ({s})")
+            cElem2.Attributes.Append(cAtt)
+            cNode = sheet.CreateTextNode(p)
+            cElem2.AppendChild(cNode)
+            cElem.AppendChild(cElem2)
+        Next
+
+        For Each p In mAunts
+            cElem2 = sheet.CreateElement("person")
+            cAtt = sheet.CreateAttribute("relation")
+            s = "maternal aunt"
+            cAtt.Value = s
+            x = InStr(p, ".")
+            p = p.ToString.Insert(x - 1, $" ({s})")
+            cElem2.Attributes.Append(cAtt)
+            cNode = sheet.CreateTextNode(p)
+            cElem2.AppendChild(cNode)
+            cElem.AppendChild(cElem2)
+        Next
+
+        cElem = sheet.SelectSingleNode("//family")
+        cElem2 = sheet.CreateElement("same-generation")
+        cElem.AppendChild(cElem2)
+        cElem = sheet.SelectSingleNode("//family/same-generation")
+
+        For i = 0 To 5
+            If youngKnights(i, 0) <> "" Then
+                cElem2 = sheet.CreateElement("person")
+                cAtt = sheet.CreateAttribute("relation")
+                If InStr(youngKnights(i, 2), "cousin") Then
+                    s = "cousin"
+                Else
+                    s = "brother"
+                End If
+                cAtt.Value = s
+                cElem2.Attributes.Append(cAtt)
+                cNode = sheet.CreateTextNode($"{youngKnights(i, 0)} (young knight, {s}). {youngKnights(i, 2)}")
+                cElem2.AppendChild(cNode)
+                cElem.AppendChild(cElem2)
+            End If
+        Next
+
+        For Each p In brothers
+            cElem2 = sheet.CreateElement("person")
+            cAtt = sheet.CreateAttribute("relation")
+            s = "brother"
+            cAtt.Value = s
+            x = InStr(p, ".")
+            p = p.ToString.Insert(x - 1, $" ({s})")
+            cElem2.Attributes.Append(cAtt)
+            cNode = sheet.CreateTextNode(p)
+            cElem2.AppendChild(cNode)
+            cElem.AppendChild(cElem2)
+        Next
+
+        For Each p In sisters
+            cElem2 = sheet.CreateElement("person")
+            cAtt = sheet.CreateAttribute("relation")
+            s = "sister"
+            cAtt.Value = s
+            x = InStr(p, ".")
+            p = p.ToString.Insert(x - 1, $" ({s})")
+            cElem2.Attributes.Append(cAtt)
+            cNode = sheet.CreateTextNode(p)
+            cElem2.AppendChild(cNode)
+            cElem.AppendChild(cElem2)
+        Next
+
+        For Each p In cousins
+            p = Replace(p, "  ", " ")
+            cElem2 = sheet.CreateElement("person")
+            cAtt = sheet.CreateAttribute("relation")
+            s = "cousin"
+            cAtt.Value = s
+            'x = InStr(p, ".")
+            'p.ToString.Insert(x, $" ({s})")
+            cElem2.Attributes.Append(cAtt)
+            cNode = sheet.CreateTextNode(p)
+            cElem2.AppendChild(cNode)
+            cElem.AppendChild(cElem2)
+        Next
 
     End Sub
 End Module

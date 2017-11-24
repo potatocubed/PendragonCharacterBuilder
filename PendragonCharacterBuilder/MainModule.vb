@@ -88,7 +88,7 @@
 
         Dim here As String = My.Computer.FileSystem.CurrentDirectory
         'DEBUG
-        here = "C:\Users\Chris\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
+        here = "C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
 
         Dim sList As String = here & "\xml\pdcc_skill_list.xml"
         Dim hList As String = here & "\xml\pdcc_heirlooms.xml"
@@ -229,6 +229,7 @@
             If s = "k" Then
                 charSkills = InitialiseCharSkills(sList)
             Else
+                tradWoman = True
                 charSkills = InitialiseCharSkills(sList, "female")
                 charClass = "lady"
                 charSquire(0) = RandomName("female")
@@ -807,6 +808,9 @@
         MiscLifeDetails(here, pAunts, False)
         MiscLifeDetails(here, mUncles, True)
         MiscLifeDetails(here, mAunts, False)
+        MiscLifeDetails(here, sisters, False)
+        MiscLifeDetails(here, brothers, True)
+        MiscLifeDetails(here, cousins, True)    'The only cousins this system generates are male, so.
 
         'Commence the export stuff.
         'Dim charSheet As New Xml.XmlDocument
@@ -829,7 +833,25 @@
                         charSIZ, charDEX, charSTR, charCON, charAPP, charFeatures, charSkills, charGlory,
                         charSquire, charHorses, charHeirlooms)
 
-        charSheet.Save(here & "\Sir " & charName & ".xml")
+        ExportHistory(charSheet, familyHistory)
+
+        ExportFamily(charSheet, fatherName, grandfatherName, fatherGlory, grandfatherGlory, motherName, motherStatus,
+                     charOldKnights, charMAKnights, charYoungKnights, pUncles, pAunts, mUncles, mAunts, brothers, sisters, cousins)
+
+        Dim bleah As String
+        If tradWoman Then
+            bleah = "Lady"
+        Else
+            bleah = "Sir"
+        End If
+
+        charSheet.Save(here & $"\{bleah} " & charName & ".xml")
+
+        Console.WriteLine()
+        Console.WriteLine("Family and history all generated!")
+        Console.WriteLine("Press any key to exit.")
+        Console.ReadKey()
+
     End Sub
 
     Sub MiscLifeDetails(here As String, ByRef inList As ArrayList, Optional male As Boolean = True)
@@ -837,7 +859,7 @@
 
         For i = 0 To inList.Count - 1
             inList(i) = $"{inList(i)}. " & AliveAndMarried()
-            If InStr(inList(i), "Dead ") Then inList(i) = inList(i) & " " & MiscDeath(here, male)
+            If InStr(inList(i), "Dead ") Then inList(i) = inList(i) & MiscDeath(here, male)
         Next
 
     End Sub
