@@ -864,6 +864,31 @@
 
     End Sub
 
+    Sub Heightening(ByRef skills As String(,), ByRef traits As String(,), ByRef passions As ArrayList,
+                    ByRef siz As Integer, ByRef dex As Integer, ByRef str As Integer, ByRef con As Integer,
+                    ByRef app As Integer)
+        Dim skarray As New ArrayList
+        For i = 0 To 39
+            skarray.Add(skills(0, i))
+        Next
+
+        Console.WriteLine()
+        Console.WriteLine("Now you get to choose four unique values to 'heighten'.")
+        Console.WriteLine("This is a +5 bonus for skills and a +1 bonus for everything else.")
+        Console.WriteLine("Skills are capped at 15, traits at 19, passions at 20, and stats at 18.")
+        Console.WriteLine("Except CON, which can go up to 21.")
+        Console.WriteLine()
+
+        For i = 1 To 4
+            Console.WriteLine("Type the name of the thing you want to increase.")
+            Console.WriteLine($"Stats: SIZ {siz}   DEX {dex}   STR {str}   CON {con}   APP {app}")
+            Console.WriteLine("Traits:")
+            'TODO This is what I'm working on right now.
+
+        Next
+
+    End Sub
+
     Sub PrintSkillList(skArray As ArrayList)
         Dim c As Integer
         c = 0
@@ -871,6 +896,21 @@
             Console.Write(skArray(i))
             c += 1
             If c < 4 And i <> skArray.Count - 1 Then
+                Console.Write(", ")
+            Else
+                c = 0
+                Console.WriteLine()
+            End If
+        Next
+    End Sub
+
+    Sub PrintTraitList(traits As String(,))
+        Dim c As Integer
+        c = 0
+        For i = 0 To 25
+            Console.Write(traits(0, i))
+            c += 1
+            If c < 4 And i <> 25 Then
                 Console.Write(", ")
             Else
                 c = 0
