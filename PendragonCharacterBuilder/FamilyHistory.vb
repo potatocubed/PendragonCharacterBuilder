@@ -148,7 +148,7 @@
         Dim x As Integer
         Dim value As Integer
 
-        ConsolidatePassions()
+        ConsolidatePassions(passionArray)
 
         Console.WriteLine()
         If yourFather Then
@@ -189,7 +189,7 @@
 
     End Sub
 
-    Sub ConsolidatePassions()
+    Sub ConsolidatePassions(ByRef passionarray As ArrayList, Optional shortPassions As Boolean = False)
         Dim s As String
         Dim s2 As String
         Dim x As Integer
@@ -204,31 +204,31 @@
         'passionArray.Add("PA/Hate (Saxons)/13")
         'passionArray.Add("PA/Hate (Saxons)/14")
         'passionArray.Add("PA/Hate (Saxons)/12")
-        stopValue = passionArray.Count - 1
+        stopValue = passionarray.Count - 1
 
         i = 0
         Do While i <= stopValue
-            s = passionArray(i)
-            x2 = passionArray.IndexOf(s)
-            s = Mid(s, 4)
+            s = passionarray(i)
+            x2 = passionarray.IndexOf(s)
+            If Not shortPassions Then s = Mid(s, 4)
             x = InStrRev(s, "/")
             passValue = Mid(s, x + 1)
             s = Left(s, x - 1)
             j = 0
             Do While j <= stopValue
-                s2 = passionArray(j)
-                x3 = passionArray.IndexOf(s2)
+                s2 = passionarray(j)
+                x3 = passionarray.IndexOf(s2)
                 If x2 <> x3 Then
-                    s2 = Mid(s2, 4)
+                    If Not shortPassions Then s2 = Mid(s2, 4)
                     x = InStrRev(s2, "/")
                     passValue2 = Mid(s2, x + 1)
                     s2 = Left(s2, x - 1)
                     If s = s2 Then
                         If passValue >= passValue2 Then
-                            passionArray.RemoveAt(x3)
+                            passionarray.RemoveAt(x3)
                             stopValue -= 1
                         Else
-                            passionArray.RemoveAt(x2)
+                            passionarray.RemoveAt(x2)
                             stopValue -= 1
                             j = j - 1
                             i = i - 1

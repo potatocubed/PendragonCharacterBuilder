@@ -1,11 +1,12 @@
 ﻿Public Module ExportModule
     Sub ExportCharacter(ByRef charSheet As Xml.XmlDocument, name As String, gender As String, tradWoman As Boolean,
-                        charAge As Integer, homeland As String, culture As String, charReligion As String,
+                        charAge As Integer, homeland As String, culture As String, charReligion As String, fatherClass As String,
                         charSonNumber As Integer, charLeige As String, charClass As String, charManor As String,
                         charTraits As String(,), charDirectedTraits As ArrayList, charPassions As ArrayList,
                         siz As Integer, dex As Integer, str As Integer, con As Integer, app As Integer,
                         features As String, skills As String(,), glory As Integer, squire As String(),
-                        horses As ArrayList, heirlooms As ArrayList)
+                        horses As ArrayList, heirlooms As ArrayList, oldKnights As String(,), maKnights As String(,),
+                        youngKnights As String(,), men As Integer, levies As Integer)
         Dim cElem As Xml.XmlElement
         Dim cNode As Xml.XmlNode
         Dim cNode2 As Xml.XmlNode
@@ -40,6 +41,10 @@
 
         cNode = charSheet.CreateElement("child-number")
         cNode.AppendChild(charSheet.CreateTextNode(charSonNumber))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("father-class")
+        cNode.AppendChild(charSheet.CreateTextNode(fatherClass))
         cElem.AppendChild(cNode)
 
         cNode = charSheet.CreateElement("homeland")
@@ -319,7 +324,7 @@
             cElem.AppendChild(cNode)
         Next
 
-        'And Horses
+        'And horses
         cElem = charSheet.SelectSingleNode("//character")
         cNode = charSheet.CreateElement("horses")
         cElem.AppendChild(cNode)
@@ -332,6 +337,33 @@
             cNode.Attributes.Append(cAtt)
             cElem.AppendChild(cNode)
         Next
+
+        'And your personal army.
+        cElem = charSheet.SelectSingleNode("//character")
+        cNode = charSheet.CreateElement("army")
+        cElem.AppendChild(cNode)
+        cElem = cElem.SelectSingleNode("army")
+
+        x = 0
+        If oldKnights(0, 0) <> "" Then x += 1
+        For i = 0 To 3
+            If maKnights(0, i) <> "" Then x += 1
+        Next
+        For i = 0 To 3
+            If youngKnights(0, i) <> "" Then x += 1
+        Next
+
+        cNode = charSheet.CreateElement("family-knights")
+        cNode.AppendChild(charSheet.CreateTextNode(CStr(x) & " plus yourself"))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("lineage-men")
+        cNode.AppendChild(charSheet.CreateTextNode(CStr(men)))
+        cElem.AppendChild(cNode)
+
+        cNode = charSheet.CreateElement("levies")
+        cNode.AppendChild(charSheet.CreateTextNode(CStr(levies)))
+        cElem.AppendChild(cNode)
     End Sub
 
     Sub ExportHistory(ByRef sheet As Xml.XmlDocument, history As String)

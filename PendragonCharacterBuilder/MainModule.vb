@@ -382,10 +382,13 @@
             Loop While s = Nothing
         Next
 
-        Console.WriteLine()
-        Console.WriteLine("You get some more options for customising your character, ")
-        Console.WriteLine("but those are way too fiddly for me to bother with here")
-        Console.WriteLine("They'll be summarised on the character sheet output.")
+        'Console.WriteLine()
+        'Console.WriteLine("You get some more options for customising your character, ")
+        'Console.WriteLine("but those are way too fiddly for me to bother with here")
+        'Console.WriteLine("They'll be summarised on the character sheet output.")
+
+        Heightening(charSkills, charTraits, charPassions, charSIZ, charDEX, charSTR, charCON, charAPP)
+
         Console.WriteLine()
         If tradWoman Then
             Console.WriteLine("Your lady-in-waiting's name is " & charSquire(0) & ". Choose a skill for her to be vaguely okay at:")
@@ -828,10 +831,11 @@
         cNode2 = charSheet.CreateElement("family")
         cNode.AppendChild(cNode2)
 
-        ExportCharacter(charSheet, charName, charGender, tradWoman, charAge, homeland, culture, charReligion,
+        ExportCharacter(charSheet, charName, charGender, tradWoman, charAge, homeland, culture, charReligion, fatherClass,
                         charSonNumber, charLeige, charClass, charManor, charTraits, charDirectedTraits, charPassions,
                         charSIZ, charDEX, charSTR, charCON, charAPP, charFeatures, charSkills, charGlory,
-                        charSquire, charHorses, charHeirlooms)
+                        charSquire, charHorses, charHeirlooms, charOldKnights, charMAKnights, charYoungKnights,
+                        charLineageMen, charLevies)
 
         ExportHistory(charSheet, familyHistory)
 
@@ -867,10 +871,23 @@
     Sub Heightening(ByRef skills As String(,), ByRef traits As String(,), ByRef passions As ArrayList,
                     ByRef siz As Integer, ByRef dex As Integer, ByRef str As Integer, ByRef con As Integer,
                     ByRef app As Integer)
-        Dim skarray As New ArrayList
+        Dim s As String = ""
+        Dim s2 As String = ""
+        Dim x As Integer
+        Dim x2 As Integer
+        Dim skArray As New ArrayList
+        Dim SkArray2 As New ArrayList
+        Dim gpArray As New ArrayList
         For i = 0 To 39
-            skarray.Add(skills(0, i))
+            If skills(1, i) <= 10 Then
+                skArray.Add(skills(0, i))
+            ElseIf skills(1, i) <= 14 Then
+                SkArray2.Add(skills(0, i))
+            End If
         Next
+        Dim statNameArray As New ArrayList
+        statNameArray.AddRange({"SIZ", "DEX", "STR", "CON", "APP"})
+        Dim statArray = New Integer() {siz, dex, str, con, app}
 
         Console.WriteLine()
         Console.WriteLine("Now you get to choose four unique values to 'heighten'.")
@@ -878,13 +895,194 @@
         Console.WriteLine("Skills are capped at 15, traits at 19, passions at 20, and stats at 18.")
         Console.WriteLine("Except CON, which can go up to 21.")
         Console.WriteLine()
+        Console.WriteLine("Just like with ability scores, there are no takebacks because I am lazy.")
+        Console.WriteLine()
 
         For i = 1 To 4
-            Console.WriteLine("Type the name of the thing you want to increase.")
-            Console.WriteLine($"Stats: SIZ {siz}   DEX {dex}   STR {str}   CON {con}   APP {app}")
-            Console.WriteLine("Traits:")
-            'TODO This is what I'm working on right now.
+            Console.WriteLine("Type the name of the category you want to increase:")
+            Console.WriteLine("Stats, Traits, Skills, or Passions.")
 
+            Do
+                s = Console.ReadLine()
+                s = LCase(s)
+                If s <> "stats" And s <> "traits" And s <> "skills" And s <> "passions" Then
+                    s = ""
+                    Console.WriteLine("Please enter Stats, Traits, Skills, or Passions.")
+                End If
+            Loop While s = ""
+
+            Select Case s
+                Case "stats"
+                    Console.WriteLine("Choose a stat to heighten:")
+                    For j = 0 To 4
+                        If j = 3 Then x = 21 Else x = 18
+                        If statArray(j) < x Then
+                            Console.Write($"{statNameArray(j)} ({statArray(j)})")
+                            If j < 4 Then
+                                For k = j + 1 To 4
+                                    If statArray(k) < 18 Then
+                                        Console.Write(", ")
+                                        Exit For
+                                    End If
+                                Next
+                            End If
+                        End If
+                    Next
+                    Console.WriteLine()
+                    Do
+                        s = ""
+                        s = Console.ReadLine()
+                        s = LCase(s)
+                        If Not statNameArray.Contains(UCase(s)) Then
+                            s = ""
+                            Console.WriteLine("Please choose one of the five stats: SIZ, DEX, STR, CON, or APP.")
+                        Else
+                            Select Case s
+                                Case "siz"
+                                    If siz < 18 Then
+                                        siz += 1
+                                        statArray(0) += 1
+                                    Else
+                                        s = ""
+                                        Console.WriteLine("That stat is too high to be enhanced further.")
+                                    End If
+                                Case "dex"
+                                    If dex < 18 Then
+                                        dex += 1
+                                        statArray(1) += 1
+                                    Else
+                                        s = ""
+                                        Console.WriteLine("That stat is too high to be enhanced further.")
+                                    End If
+                                Case "str"
+                                    If str < 18 Then
+                                        str += 1
+                                        statArray(2) += 1
+                                    Else
+                                        s = ""
+                                        Console.WriteLine("That stat is too high to be enhanced further.")
+                                    End If
+                                Case "con"
+                                    If con < 21 Then
+                                        con += 1
+                                        statArray(3) += 1
+                                    Else
+                                        s = ""
+                                        Console.WriteLine("That stat is too high to be enhanced further.")
+                                    End If
+                                Case "app"
+                                    If app < 18 Then
+                                        app += 1
+                                        statArray(4) += 1
+                                    Else
+                                        s = ""
+                                        Console.WriteLine("That stat is too high to be enhanced further.")
+                                    End If
+                            End Select
+                        End If
+                    Loop While s = ""
+                Case "traits"
+                    Console.WriteLine("Choose a trait to heighten:")
+                    PrintTraitList(traits, 19)
+                    Do While s <> ""
+                        s = "x"
+                        s = Console.ReadLine()
+                        If s = "" Then s = "x"
+                        s = StrConv(s, vbProperCase)
+                        For j = 0 To 25
+                            If traits(0, j) = s And traits(1, j) < 19 Then
+                                traits = TraitUpdate(traits, s, traits(1, j) + 1)
+                                s = ""
+                                Exit For
+                            End If
+                        Next
+                        If s = "x" Then Console.WriteLine("Please choose one of the listed traits.")
+                    Loop
+                Case "skills"
+                    Console.WriteLine("Choose a skill to heighten.")
+                    Console.WriteLine("This first list are all less than or equal to 10. You'll get the full +5 bonus by heightening these:")
+                    PrintSkillList(skArray)
+                    If SkArray2.Count > 0 Then
+                        Console.WriteLine("This second list are all between 11 and 14, so heightening these will bump them to maximum 15.")
+                        PrintSkillList(SkArray2)
+                    End If
+                    Do While s <> ""
+                        s = "x"
+                        s = Console.ReadLine()
+                        If s = "" Then s = "x"
+                        s = StrConv(s, vbProperCase)
+                        If Not (skArray.Contains(s) Or SkArray2.Contains(s)) Then s = "x"
+                        For j = 0 To 25
+                            If skills(0, j) = s Then
+                                SkillUpdater($"(+5 {s})", skills, 15)
+                                skArray.Clear()
+                                SkArray2.Clear()
+                                For k = 0 To 39
+                                    If skills(1, k) <= 10 Then
+                                        skArray.Add(skills(0, k))
+                                    ElseIf skills(1, k) <= 14 Then
+                                        SkArray2.Add(skills(0, k))
+                                    End If
+                                Next
+                                s = ""
+                                Exit For
+                            End If
+                        Next
+                        If s = "x" Then Console.WriteLine("Please choose one of the listed skills.")
+                    Loop
+                Case "passions"
+                    Console.WriteLine("Choose a passion to heighten:")
+                    s = "x"
+                    x2 = 0
+                    Do While s <> ""
+                        For Each p In passions
+                            Try
+                                x = Right(p, 2)
+                                s2 = Left(p, Len(p) - 3)
+                                gpArray.Add(s2)
+                            Catch
+                                Try
+                                    x = Right(p, 1)
+                                    s2 = Left(p, Len(p) - 2)
+                                    gpArray.Add(s2)
+                                Catch
+                                    x = 0
+                                    s2 = p
+                                End Try
+                            End Try
+
+                            If x < 20 Then
+                                If passions.IndexOf(p) <> 0 Then Console.Write(", ")
+                                If x2 >= 4 Then
+                                    Console.WriteLine()
+                                    x2 = 0
+                                Else
+                                    x2 += 1
+                                End If
+                                Console.Write($"{s2} ({x})")
+                            End If
+                        Next
+                        Console.WriteLine()
+
+                        s = "x"
+                        s = Console.ReadLine()
+                        If s = "" Then s = "x"
+                        s = StrConv(s, vbProperCase)
+                        If gpArray.Contains(s) Then
+                            s = s2 & "/" & x + 1
+                            passions.Add(s)
+                            s = ""
+                        ElseIf passions.Contains(s) Then
+                            passions.Add(s)
+                            s = ""
+                        Else
+                            s = "x"
+                        End If
+                        ConsolidatePassions(passions, True)
+
+                        If s = "x" Then Console.WriteLine("Please choose one of the listed passions.")
+                    Loop
+            End Select
         Next
 
     End Sub
@@ -904,17 +1102,22 @@
         Next
     End Sub
 
-    Sub PrintTraitList(traits As String(,))
+    Sub PrintTraitList(traits As String(,), Optional traitMax As Integer = 21)
         Dim c As Integer
         c = 0
         For i = 0 To 25
-            Console.Write(traits(0, i))
-            c += 1
-            If c < 4 And i <> 25 Then
-                Console.Write(", ")
-            Else
-                c = 0
-                Console.WriteLine()
+            If traits(1, i) < traitMax And traits(1, i) > 20 - traitMax Then
+                'Don't display traits that are too high for the max OR their counterparts.
+                'I suppose it wouldn't HURT to display the counterparts but then you'd be spending
+                'points to undo your previous point spend and that's unlikely to ever come up.
+                Console.Write($"{traits(0, i)} ({traits(1, i)})")
+                c += 1
+                If c < 4 And i <> 25 Then
+                    Console.Write(", ")
+                Else
+                    c = 0
+                    Console.WriteLine()
+                End If
             End If
         Next
     End Sub
@@ -940,7 +1143,7 @@
                 x2 = CInt(sArray(1, i))
                 x2 = x2 + x
                 If limited >= 0 Then
-                    If x2 > limited Then x = limited
+                    If x2 > limited Then x2 = limited
                 End If
                 sArray(1, i) = CStr(x2)
                 Exit For
