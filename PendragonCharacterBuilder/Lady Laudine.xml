@@ -119,13 +119,6 @@
         <skill name="Stewardship" value="5" />
         <skill name="Swimming" value="10" />
         <skill name="Tourney" value="1" />
-        <skill name="Axe" value="0" />
-        <skill name="Battle" value="1" />
-        <skill name="Bow" value="0" />
-        <skill name="Crossbow" value="0" />
-        <skill name="Dagger" value="5" />
-        <skill name="Great Axe" value="0" />
-        <skill name="Great Spear" value="0" />
       </non-combat>
       <combat>
         <skill name="Axe" value="0" />

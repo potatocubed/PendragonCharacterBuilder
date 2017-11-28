@@ -230,7 +230,7 @@
         cElem.AppendChild(cNode)
         cElem = cElem.SelectSingleNode("non-combat")
 
-        For i = 0 To 33
+        For i = 0 To 26
             cNode = charSheet.CreateElement("skill")
             s = skills(0, i)
             s2 = skills(1, i)
