@@ -850,6 +850,7 @@
         End If
 
         charSheet.Save(here & $"\{bleah} " & charName & ".xml")
+        ProcessXMLOutput(charSheet, here)
 
         Console.WriteLine()
         Console.WriteLine("Family and history all generated!")

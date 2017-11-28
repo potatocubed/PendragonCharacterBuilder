@@ -148,11 +148,7 @@
       <name>Cunneware</name>
       <age>15</age>
       <skill name="First Aid" value="6" />
-      <skill name="6" value="Battle" />
       <skill name="Battle" value="1" />
-      <skill name="1" value="" />
-      <skill name="" value="6" />
-      <skill name="6" value="Awareness" />
       <skill name="Awareness" value="6" />
     </squire>
     <horses>

@@ -72,7 +72,6 @@
     <Compile Include="MainModule.vb" />
     <Compile Include="FamilyHistory.vb" />
     <Compile Include="ExportModule.vb" />
-    <Compile Include="XSLTProcessor.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -89,6 +88,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="XMLInterpreters.vb" />
+    <Compile Include="XSLTProcessor.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

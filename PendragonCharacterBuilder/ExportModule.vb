@@ -310,7 +310,7 @@
         cNode.AppendChild(charSheet.CreateTextNode(squire(1)))
         cElem.AppendChild(cNode)
 
-        For i = 2 To 8
+        For i = 2 To 8 Step 2
             If squire(i) = "xx" Then Exit For
             cNode = charSheet.CreateElement("skill")
             s = squire(i)
