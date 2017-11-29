@@ -54,8 +54,7 @@
                 If charAge = 21 Then
                     x = DiceRoller(1, 4)
                     If x = 1 Then
-                        s = "Your sister's husband. " & AliveAndMarried(True)
-                        s = Replace(s, " married", " married to RANDOMSISTER")
+                        s = "Your sister's husband. Alive and married to RANDOMSISTER"
                     ElseIf x <= 3 Then
                         s = "Your first cousin (maternal). " & AliveAndMarried(True)
                         s = Replace(s, " married", " married to " & RandomName("female"))
@@ -72,8 +71,7 @@
                         s = "Your first cousin (paternal). " & AliveAndMarried(True)
                         s = Replace(s, " married", " married to " & RandomName("female"))
                     ElseIf x <= 15 Then
-                        s = "Your sister's husband. " & AliveAndMarried(True)
-                        s = Replace(s, " married", " married to RANDOMSISTER")
+                        s = "Your sister's husband. Alive and married to RANDOMSISTER"
                     ElseIf x <= 17 Then
                         s = "Your first cousin (maternal). " & AliveAndMarried(True)
                         s = Replace(s, " married", " married to " & RandomName("female"))

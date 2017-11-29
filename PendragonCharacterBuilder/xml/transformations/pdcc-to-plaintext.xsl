@@ -201,7 +201,14 @@
     </xsl:template>
     
     <xsl:template match="history">
-        
+        <xsl:call-template name="heading">
+            <xsl:with-param name="h-level">2</xsl:with-param>
+            <xsl:with-param name="t">History</xsl:with-param>
+        </xsl:call-template>
+        <xsl:text>&#10;</xsl:text>
+        <xsl:for-each select="./p">
+            <xsl:value-of select="concat(., $nl, $nl)"/>
+        </xsl:for-each>
     </xsl:template>
     
     <xsl:template match="family">
