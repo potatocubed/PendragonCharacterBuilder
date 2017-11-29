@@ -88,7 +88,7 @@
 
         Dim here As String = My.Computer.FileSystem.CurrentDirectory
         'DEBUG
-        here = "C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
+        'here = "C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
 
         Dim sList As String = here & "\xml\pdcc_skill_list.xml"
         Dim hList As String = here & "\xml\pdcc_heirlooms.xml"
