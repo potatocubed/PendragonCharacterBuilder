@@ -849,8 +849,9 @@
             bleah = "Sir"
         End If
 
-        charSheet.Save(here & $"\{bleah} " & charName & ".xml")
-        ProcessXMLOutput(charSheet, here)
+        s = here & $"\{bleah} " & charName & ".xml"
+        charSheet.Save(s)
+        ProcessXMLOutput(s, here)
 
         Console.WriteLine()
         Console.WriteLine("Family and history all generated!")

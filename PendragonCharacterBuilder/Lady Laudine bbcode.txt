@@ -1,0 +1,137 @@
+﻿[b]LADY LAUDINE
+[/b]Age: 21
+Gender: Female
+Child Number: 1
+Glory: 104
+
+Culture: Cymric
+Homeland: Salisbury
+Home: Woodford
+Lord: Sir Roderick, Earl of Salisbury
+Religion: British Christian
+
+[b]Attributes[/b]
+SIZ 12
+DEX 12
+STR 12
+CON 16
+APP 13
+
+Damage: 4d6
+Healing: 3
+Move: 2
+HP: 28
+Unconscious: 7
+
+[i]Distinctive Features[/i]
+Something about her hair and her facial feature.
+
+[b]Traits[/b]
+Chaste 13 / 7 Lustful
+Energetic 4 / 16 Lazy
+Forgiving 10 / 10 Vengeful
+Generous 13 / 7 Selfish
+Honest 10 / 10 Deceitful
+Just 10 / 10 Arbitrary
+Merciful 10 / 10 Cruel
+Modest 13 / 7 Proud
+Prudent 10 / 10 Reckless
+Spiritual 10 / 10 Worldly
+Temperate 13 / 7 Indulgent
+Trusting 10 / 10 Suspicious
+Valorous 15 / 5 Cowardly
+
+[b]Passions[/b]
+Loyalty (Lord) 15
+Love (Family) 15
+Hospitality 15
+Honour 17
+
+[b]Skills[/b]
+[i]Non-Combat[/i]
+Awareness 2
+Chirurgery 10
+Compose 1
+Courtesy 5
+Dancing 2
+Faerie Lore 3
+Falconry 7
+Fashion 2
+First Aid 10
+Flirting 5
+Folk Lore 2
+Gaming 3
+Heraldry 1
+Industry 5
+Intrigue 2
+Orate 7
+Play (Harp) 10
+Read (Latin) 10
+Recognise 2
+Religion (British Christianity) 2
+Romance 2
+Singing 8
+Stewardship 5
+Swimming 10
+Tourney 1
+
+[i]Combat[/i]
+Battle 1
+Dagger 5
+Horsemanship 3
+Sword 15
+
+[b]Lady in Waiting[/b]
+Name: Cunneware
+Age: 15
+First Aid 6
+Battle 1
+Awareness 6
+
+[b]Stuff[/b]
+Sewing kit
+Fine clothing (worth £1)
+Simple jewellery
+Toilet articles
+A chest
+£1 in cash
+
+[b]Horses[/b]
+Charger
+Rouncy
+Rouncy
+Sumpter
+
+[b]History[/b]
+439: In this year Alein fathered a son, Floridas. Then Alein fought at the battle of Carlion.
+
+440: Alein served garrison duty and was killed by Picts.
+
+468: Floridas met his end. He disappeared in unknown and mysterious circumstances, and is presumed dead.
+
+[b]Family[/b]
+[i]Grandparents' Generation[/i]
+[s]Alein (your grandfather). Dead with 354 glory.[/s]
+Hermel (old knight). Alein's younger brother. Alive and married to Morchades. 
+
+[i]Parents' Generation[/i]
+[s]Floridas (your father). Dead with 1035 glory.[/s]
+Feimurgan (your mother). Alive and married to Pillounes. 
+Bellangere (middle-aged knight, maternal-uncle). Feimurgan's brother. Alive and married to Carsenefide. 
+Hermel (middle-aged knight, paternal-uncle). Floridas's younger brother. Alive and unmarried. 
+Selivant (middle-aged knight, maternal-uncle). Feimurgan's brother. Alive and unmarried. 
+Bellangere (paternal uncle). Alive and married. 
+Hewgon (paternal uncle). Alive and unmarried. 
+Diane (paternal aunt). Alive and unmarried. 
+Loorette (paternal aunt). Alive and unmarried. 
+Blancheflor (maternal aunt). Alive and married. 
+
+[i]Your Generation[/i]
+Miles (young knight, cousin). Your first cousin (maternal). Alive and married to Elizabeth.  Son of Blancheflor.
+Arrouse (young knight, brother). Your sister's husband. Alive and unmarried. 
+Cleremond (young knight, brother). Your sister's husband. Alive and married to Maugalie. 
+Clegis (brother). Alive and unmarried. 
+Ebel (brother). Alive and married. 
+Guy (brother). Alive and married. 
+Maugalie (sister). Alive and married. 
+Elizabeth (sister). Alive and married. 

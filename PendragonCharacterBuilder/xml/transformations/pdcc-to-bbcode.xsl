@@ -13,7 +13,7 @@
     <xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
     <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
     <xsl:variable name="nl"><xsl:text>&#10;</xsl:text></xsl:variable>
-    <xsl:param name="outputTag">plaintext</xsl:param>
+    <xsl:param name="outputTag">bbcode</xsl:param>
     
     <xsl:template match="/">
         <xsl:apply-templates/>
@@ -245,13 +245,13 @@
         <xsl:param name="t"/>
         <xsl:choose>
             <xsl:when test="$h-level = 1">
-                <xsl:value-of select="translate($t, $lowercase, $uppercase)"/>
+                <xsl:value-of select="concat('[b]', translate($t, $lowercase, $uppercase), '[/b]')"/>
             </xsl:when>
             <xsl:when test="$h-level = 2">
-                <xsl:value-of select="translate($t, $lowercase, $uppercase)"/>
+                <xsl:value-of select="concat('[b]', $t, '[/b]')"/>
             </xsl:when>
             <xsl:when test="$h-level = 3">
-                <xsl:value-of select="$t"/>
+                <xsl:value-of select="concat('[i]', $t, '[/i]')"/>
             </xsl:when>
             <xsl:otherwise>
                 <!-- A failsafe here. -->
@@ -260,6 +260,10 @@
         </xsl:choose>
     </xsl:template>
     
+    <xsl:template match="person[contains(., 'Dead') or contains(., 'dead') or contains(., 'Deceased') or contains(., 'deceased')]">
+        <xsl:value-of select="concat('[s]', ., '[/s]', $nl)"/>
+    </xsl:template>
+
     <xsl:template match="person">
         <xsl:value-of select="concat(., $nl)"/>
     </xsl:template>
@@ -302,41 +306,22 @@
     <xsl:template name="trait-output">
         <xsl:param name="pair"/>
         <xsl:variable name="t1">
-            <xsl:value-of select="substring(
-                concat($pair/trait[1]/@name, '            '), 
-                1, 12)"/>
-            <!-- This is such a clever operation! Thanks Stack Overflow! -->
+            <xsl:value-of select="$pair/trait[1]/@name"/>
         </xsl:variable>
         <xsl:variable name="t2">
-            <xsl:value-of select="concat(
-                substring('            ',
-                    string-length($pair/trait[2]/@name)),
-                $pair/trait[2]/@name
-                )"/>
+            <xsl:value-of select="$pair/trait[2]/@name"/>
         </xsl:variable>
         <xsl:variable name="v1">
-            <xsl:choose>
-                <xsl:when test="$pair/trait[1]/@value >= 10">
-                    <xsl:value-of select="$pair/trait[1]/@value"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="concat(' ', $pair/trait[1]/@value)"/>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="$pair/trait[1]/@value"/>
         </xsl:variable>
         <xsl:variable name="v2">
-            <xsl:value-of select="substring(
-                concat(
-                $pair/trait[2]/@value, 
-                '  '), 
-                1, 2
-                )"/>
+            <xsl:value-of select="$pair/trait[2]/@value"/>
         </xsl:variable>
         <xsl:value-of select="concat(
-            $t1, 
+            $t1, ' ', 
             $v1,
             ' / ',
-            $v2,
+            $v2, ' ',
             $t2,
             $nl
             )"/>
@@ -345,37 +330,22 @@
     <xsl:template name="passion-output">
         <xsl:param name="passion"/>
         <xsl:variable name="p">
-            <xsl:value-of select="substring(concat($passion/@name, '                  '), 1, 17)"/>
+            <xsl:value-of select="$passion/@name"/>
         </xsl:variable>
         <xsl:variable name="v">
-            <xsl:choose>
-                <xsl:when test="$passion/@value >= 10">
-                    <xsl:value-of select="$passion/@value"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="concat(' ', $passion/@value)"/>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="$passion/@value"/>
         </xsl:variable>
-        <xsl:value-of select="concat($p, $v, $nl)"/>
+        <xsl:value-of select="concat($p, ' ', $v, $nl)"/>
     </xsl:template>
 
     <xsl:template name="skill-output">
         <xsl:param name="skill"/>
         <xsl:variable name="s">
-            <xsl:value-of select="substring(concat($skill/@name, 
-                '                                   '), 1, 32)"/>
+            <xsl:value-of select="$skill/@name"/>
         </xsl:variable>
         <xsl:variable name="v">
-            <xsl:choose>
-                <xsl:when test="$skill/@value >= 10">
-                    <xsl:value-of select="$skill/@value"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="concat(' ', $skill/@value)"/>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="$skill/@value"/>
         </xsl:variable>
-        <xsl:value-of select="concat($s, $v, $nl)"/>
+        <xsl:value-of select="concat($s, ' ', $v, $nl)"/>
     </xsl:template>
 </xsl:stylesheet>
