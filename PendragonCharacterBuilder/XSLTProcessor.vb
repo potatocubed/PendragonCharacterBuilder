@@ -9,6 +9,7 @@
         Dim x As New Xml.XmlDocument
         Dim xElem As Xml.XmlElement
         Dim charName As String
+        Dim charName2 As String
         Dim n As Integer
         Dim nsManager As Xml.XmlNamespaceManager
 
@@ -34,9 +35,9 @@
             nsManager.AddNamespace("xsl", x.DocumentElement.Attributes("xmlns:xsl").InnerText)
             xElem = x.SelectSingleNode("//xsl:param[@name='outputTag']", nsManager)
             s = xElem.InnerText
-            charName = $"{charName} {s}.txt"
+            charName2 = $"{charName} {s}.txt"
             xslt.Load(transformDir & fl)
-            xslt.Transform(sheetLoc, exportDir & "\" & charName)
+            xslt.Transform(sheetLoc, exportDir & "\" & charName2)
         Next
     End Sub
 

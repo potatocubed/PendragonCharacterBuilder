@@ -88,7 +88,7 @@
 
         Dim here As String = My.Computer.FileSystem.CurrentDirectory
         'DEBUG
-        'here = "C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
+        here = "C:\Users\LonghurstC\source\repos\PendragonCharacterBuilder\PendragonCharacterBuilder"
 
         Dim sList As String = here & "\xml\pdcc_skill_list.xml"
         Dim hList As String = here & "\xml\pdcc_heirlooms.xml"
@@ -1014,7 +1014,7 @@
                         If s = "" Then s = "x"
                         s = StrConv(s, vbProperCase)
                         If Not (skArray.Contains(s) Or SkArray2.Contains(s)) Then s = "x"
-                        For j = 0 To 25
+                        For j = 0 To 39
                             If skills(0, j) = s Then
                                 SkillUpdater($"(+5 {s})", skills, 15)
                                 skArray.Clear()

@@ -347,10 +347,16 @@
         x = 0
         If oldKnights(0, 0) <> "" Then x += 1
         For i = 0 To 3
-            If maKnights(0, i) <> "" Then x += 1
+            Try
+                If maKnights(i, 0) <> "" Then x += 1
+            Catch
+            End Try
         Next
-        For i = 0 To 3
-            If youngKnights(0, i) <> "" Then x += 1
+        For i = 0 To 5
+            Try
+                If youngKnights(i, 0) <> "" Then x += 1
+            Catch
+            End Try
         Next
 
         cNode = charSheet.CreateElement("family-knights")
